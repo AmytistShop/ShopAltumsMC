@@ -8,6 +8,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.WallSign;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -110,11 +113,31 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
                 return true;
             }
 
-            // Find sign on the front face is complex; simplest: create sign on chest block itself if clicked? 
-            // We'll use: player must click a sign attached to chest to finalize.
-            msg(p, "&aТеперь поставь табличку на сундук и напиши на 1 строке [Магазин], затем кликни по ней.");
-            // store pending in memory
-            PendingStore.set(p.getUniqueId(), new Pending(p.getUniqueId(), getLocationKey(chest.getLocation()), price, amount));
+            // Табличку ставим сами, чтобы не конфликтовать с другими плагинами,
+            // которые могут запрещать/удалять ручную установку табличек на сундук.
+            Sign sign = findAttachedSign(target);
+            if (sign == null) {
+                sign = createWallSignOnChest(target, p);
+                if (sign == null) {
+                    msg(p, "&cНе удалось поставить табличку рядом с сундуком: нет свободного блока сбоку.");
+                    return true;
+                }
+            }
+
+            // Пишем данные магазина прямо в PDC таблички
+            final String shopId = getLocationKey(sign.getLocation());
+            final PersistentDataContainer pdc = sign.getPersistentDataContainer();
+            pdc.set(KEY_SHOP, PersistentDataType.STRING, shopId);
+            pdc.set(KEY_OWNER, PersistentDataType.STRING, p.getUniqueId().toString());
+            pdc.set(KEY_PRICE, PersistentDataType.INTEGER, price);
+            pdc.set(KEY_AMOUNT, PersistentDataType.INTEGER, amount);
+            pdc.set(KEY_ITEM, PersistentDataType.STRING, item.getType().name());
+
+            // Обновим текст таблички под магазин
+            applySignText(sign, p.getName(), item.getType(), amount, price);
+            sign.update(true, false);
+
+            msg(p, cfg().getString("messages.shop-created"));
             return true;
         }
 
@@ -203,43 +226,6 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
             return;
         }
 
-        // otherwise, try finalize creation if pending and sign first line is [Магазин]
-        Pending pending = PendingStore.get(p.getUniqueId());
-        if (pending == null) return;
-
-        String line1 = strip(sign.getLine(0));
-        if (!line1.equalsIgnoreCase("[Магазин]")) return;
-
-        Chest chest = pending.findChest();
-        if (chest == null) {
-            msg(p, cfg().getString("messages.shop-not-found"));
-            PendingStore.clear(p.getUniqueId());
-            return;
-        }
-
-        ItemStack item = firstNonAir(chest.getBlockInventory());
-        if (item == null) {
-            msg(p, "&cПоложи предмет в сундук.");
-            return;
-        }
-
-        // write shop data into sign PDC
-        PersistentDataContainer pdc = sign.getPersistentDataContainer();
-        pdc.set(KEY_OWNER, PersistentDataType.STRING, p.getUniqueId().toString());
-        pdc.set(KEY_PRICE, PersistentDataType.INTEGER, pending.price);
-        pdc.set(KEY_AMOUNT, PersistentDataType.INTEGER, pending.amount);
-        pdc.set(KEY_ITEM, PersistentDataType.STRING, item.getType().getKey().toString());
-
-        // update sign text
-        applySignText(sign, p.getName(), item.getType(), pending.amount, pending.price);
-        sign.update(true, false);
-
-        msg(p, cfg().getString("messages.sign-created")
-                .replace("%price%", String.valueOf(pending.price))
-                .replace("%amount%", String.valueOf(pending.amount))
-                .replace("%currency%", currencyDisplay()));
-
-        PendingStore.clear(p.getUniqueId());
     }
 
     @EventHandler
@@ -411,6 +397,75 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
         return new ShopData(owner, price, amount, sign.getLocation(), mat);
     }
 
+    /**
+     * Ищет табличку, которая прикреплена к сундуку (стеновая или стоящая на верхнем блоке).
+     * Нужна, чтобы создание магазина происходило только по команде, без дополнительных кликов.
+     */
+    
+    /**
+     * Ставит табличку сбоку от сундука (WALL_SIGN) и возвращает её.
+     * Нужна, чтобы не зависеть от ручной установки таблички (конфликты с другими плагинами).
+     */
+    private Sign createWallSignOnChest(Block chestBlock, Player creator) {
+        // Ставим обычную настенную табличку из дуба. Можно расширить на конфиг позже.
+        Material wallSignMat = Material.OAK_WALL_SIGN;
+
+        for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST}) {
+            Block place = chestBlock.getRelative(face);
+
+            // Нужен свободный блок
+            if (!place.getType().isAir()) continue;
+
+            // Ставим табличку и разворачиваем наружу (в сторону face)
+            place.setType(wallSignMat, false);
+
+            BlockData data = place.getBlockData();
+            if (data instanceof WallSign ws) {
+                ws.setFacing(face);
+                place.setBlockData(ws, false);
+            }
+
+            BlockState state = place.getState();
+            if (state instanceof Sign sign) {
+                return sign;
+            } else {
+                // если по какой-то причине это не Sign — откатываем
+                place.setType(Material.AIR, false);
+            }
+        }
+        return null;
+    }
+
+private Sign findAttachedSign(Block chestBlock) {
+        // 1) табличка сверху
+        Block above = chestBlock.getRelative(BlockFace.UP);
+        BlockState aboveState = above.getState();
+        if (aboveState instanceof Sign s) {
+            return s;
+        }
+
+        // 2) стеновые таблички по сторонам
+        for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST}) {
+            Block sb = chestBlock.getRelative(face);
+            BlockState st = sb.getState();
+            if (!(st instanceof Sign sign)) continue;
+
+            BlockData data = sb.getBlockData();
+            if (data instanceof org.bukkit.block.data.type.WallSign ws) {
+                // у WallSign facing — это куда "смотрит" табличка; прикреплена она к противоположной стороне
+                BlockFace attachedTo = ws.getFacing().getOppositeFace();
+                if (sb.getRelative(attachedTo).equals(chestBlock)) {
+                    return sign;
+                }
+            } else {
+                // на случай других реализаций — просто принимаем как "рядом"
+                return sign;
+            }
+        }
+
+        return null;
+    }
+
     private UUID findOwnerForChest(Chest chest) {
         // look for shop signs within 1 block around the chest (walls)
         for (Block b : nearbyBlocks(chest.getBlock(), 2)) {
@@ -467,31 +522,6 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     }
 
     // ---------------- Data ----------------
-
-    private static final class Pending {
-        final UUID owner;
-        final String chestKey;
-        final int price;
-        final int amount;
-
-        Pending(UUID owner, String chestKey, int price, int amount) {
-            this.owner = owner;
-            this.chestKey = chestKey;
-            this.price = price;
-            this.amount = amount;
-        }
-
-        Chest findChest() {
-            return ChestLocator.find(chestKey);
-        }
-    }
-
-    private static final class PendingStore {
-        private static final Map<UUID, Pending> map = new HashMap<>();
-        static void set(UUID id, Pending p) { map.put(id, p); }
-        static Pending get(UUID id) { return map.get(id); }
-        static void clear(UUID id) { map.remove(id); }
-    }
 
     private static final class ShopData {
         final UUID owner;
