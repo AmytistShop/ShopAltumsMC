@@ -1,0 +1,34 @@
+# ShopAltumMC config
+currency-material: DIAMOND
+sign-material: OAK_WALL_SIGN
+
+# When player runs /shop with no args
+help-message:
+  - "&6ShopAltumMC"
+  - "&e/shop set <amount> <price> &7- создать магазин (товар в руке, смотришь на сундук)"
+  - "&e/shop remove &7- удалить магазин (смотришь на табличку/сундук)"
+  - "&e/shop reload &7- перезагрузить конфиг"
+
+messages:
+  must-be-player: "&cТолько игрок может использовать эту команду."
+  no-permission: "&cНет прав."
+  look-at-chest: "&cСмотри на сундук (наведи прицелом)."
+  hold-item: "&cВозьми товар в руку."
+  invalid-number: "&cНеверные числа. Пример: &e/shop set 10 3"
+  shop-created: "&aМагазин создан!"
+  shop-removed: "&aМагазин удалён."
+  shop-not-found: "&cМагазин не найден."
+  not-owner: "&cТы не владелец этого магазина."
+  not-enough-stock: "&cНедостаточно товара для покупки."
+  not-enough-money: "&cНедостаточно алмазов. Нужно: &b%price%"
+  purchased: "&aКуплено &b%amount%x %item% &aза &b%price% &aалмаз(ов)."
+
+# Sign text templates (supports placeholders)
+# Placeholders: %owner%, %item%, %amount%, %price%
+# Colors: use &
+# For Bedrock players, gradients/hex will be stripped automatically.
+sign:
+  line1: "&f[Магазин]"
+  line2: "&f%owner%"
+  line3: "&c%item%"
+  line4: "&fЦена: &c%amount%&fшт. &c%price% &fалм"
