@@ -36,6 +36,7 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     private NamespacedKey KEY_PRICE;
     private NamespacedKey KEY_AMOUNT;
     private NamespacedKey KEY_ITEM;
+    private NamespacedKey KEY_SHOP;
 
     @Override
     public void onEnable() {
@@ -45,6 +46,7 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
         KEY_PRICE = new NamespacedKey(this, "price");
         KEY_AMOUNT = new NamespacedKey(this, "amount");
         KEY_ITEM = new NamespacedKey(this, "item");
+        KEY_SHOP = new NamespacedKey(this, "shop");
 
         Bukkit.getPluginManager().registerEvents(this, this);
         Objects.requireNonNull(getCommand("shop")).setExecutor(this);
