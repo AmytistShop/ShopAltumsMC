@@ -1,14 +1,13 @@
 name: ShopAltumMC
-main: ru.altum.shopaltummc.ShopAltumMCPlugin
 version: 1.0.0
-api-version: '1.20'
-softdepend: [Geyser-Spigot, floodgate]
+main: ru.altum.shopaltummc.ShopAltumMCPlugin
+api-version: "1.20"
 author: AltumMC
 commands:
   shop:
-    description: ShopAltumMC main command
-    usage: /shop
+    description: Магазины сундуков
+    usage: /shop set <amount> <price>
 permissions:
-  shopaltummc.admin:
-    description: Admin bypass for shops
+  shop.admin:
+    description: Админ-права ShopAltumMC
     default: op
