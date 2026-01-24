@@ -16,6 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -28,6 +29,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.*;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -40,17 +42,17 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     private NamespacedKey KEY_ITEM;
     private NamespacedKey KEY_SHOP;
 
-    @Override
-    
     // items.yml (Material -> display name)
     private File itemsFile;
     private YamlConfiguration itemsCfg;
-public void onEnable() {
+
+    @Override
+    public void onEnable() {
         saveDefaultConfig();
 
-        
         loadItemsConfig();
-KEY_OWNER = new NamespacedKey(this, "owner");
+
+        KEY_OWNER = new NamespacedKey(this, "owner");
         KEY_PRICE = new NamespacedKey(this, "price");
         KEY_AMOUNT = new NamespacedKey(this, "amount");
         KEY_ITEM = new NamespacedKey(this, "item");
@@ -144,7 +146,7 @@ KEY_OWNER = new NamespacedKey(this, "owner");
             pdc.set(KEY_ITEM, PersistentDataType.STRING, item.getType().name());
 
             // Обновим текст таблички под магазин
-            markChestAsShop(chestBlock, p.getUniqueId());
+            markChestAsShop(target, p.getUniqueId());
             applySignText(sign, p.getName(), item.getType(), amount, price);
             sign.update(true, false);
 
@@ -394,6 +396,49 @@ Chest chest = data.findChest();
     private boolean isShopSign(Sign sign) {
         PersistentDataContainer pdc = sign.getPersistentDataContainer();
         return pdc.has(KEY_OWNER, PersistentDataType.STRING) && pdc.has(KEY_PRICE, PersistentDataType.INTEGER);
+    }
+
+    private void markChestAsShop(Block chestBlock, UUID owner) {
+        BlockState st = chestBlock.getState();
+        PersistentDataContainer pdc = st.getPersistentDataContainer();
+        pdc.set(KEY_SHOP, PersistentDataType.BYTE, (byte) 1);
+        pdc.set(KEY_OWNER, PersistentDataType.STRING, owner.toString());
+        st.update(true, false);
+    }
+
+    private UUID getChestOwnerIfShop(Block chestBlock) {
+        BlockState st = chestBlock.getState();
+        if (!(st instanceof Chest)) return null;
+        PersistentDataContainer pdc = st.getPersistentDataContainer();
+
+        // Preferred: owner stored on chest
+        if (pdc.has(KEY_SHOP, PersistentDataType.BYTE) && pdc.has(KEY_OWNER, PersistentDataType.STRING)) {
+            String s = pdc.get(KEY_OWNER, PersistentDataType.STRING);
+            try { return s == null ? null : UUID.fromString(s); } catch (IllegalArgumentException ignored) { }
+        }
+
+        // Fallback: owner stored on attached shop sign
+        return findOwnerForChest(chestBlock);
+    }
+
+    private void clearChestMarkers(Block chestBlock) {
+        BlockState st = chestBlock.getState();
+        PersistentDataContainer pdc = st.getPersistentDataContainer();
+        pdc.remove(KEY_SHOP);
+        pdc.remove(KEY_OWNER);
+        st.update(true, false);
+    }
+
+    private void removeShopMarkers(Block chestBlock) {
+        // Remove attached shop sign (if any)
+        Block signBlock = findAttachedSign(chestBlock);
+        if (signBlock != null) {
+            BlockState bs = signBlock.getState();
+            if (bs instanceof Sign sign && isShopSign(sign)) {
+                signBlock.setType(Material.AIR);
+            }
+        }
+        clearChestMarkers(chestBlock);
     }
 
     private ShopData readShop(Sign sign) {
