@@ -1,4 +1,3 @@
-\
 package ru.altum.shopaltummc;
 
 import org.bukkit.Bukkit;
