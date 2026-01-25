@@ -1,0 +1,12 @@
+messages:
+  currency: "алм"
+  prefix: "&a[Магазин]&r "
+  created: "&aМагазин создан!"
+  usage: "&cИспользование: /shop set <кол-во> <цена>"
+  look_at_chest: "&cПосмотри на сундук."
+  bad_number: "&cЧисла должны быть > 0."
+  not_enough: "&cВ сундуке нет товара."
+  self_buy: "&cНельзя покупать у себя."
+  bought: "&aКуплено: &f%amount%x %item% &aза &f%price%&a."
+  no_money: "&cНедостаточно средств."
+  protected: "&cЭто магазин игрока &f%owner%&c."
