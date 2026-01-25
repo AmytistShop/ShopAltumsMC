@@ -1,0 +1,35 @@
+currency:
+  material: DIAMOND
+  display: "алмазов"
+
+messages:
+  prefix: "&a[Магазин]&r "
+  help:
+    - "&e/shop set <цена> <кол-во> &7- создать магазин (нужно смотреть на сундук)"
+    - "&e/shop reload &7- перезагрузить конфиг"
+  reloaded: "&aКонфиг перезагружен."
+  no-permission: "&cНедостаточно прав."
+  look-at-chest: "&cПосмотри на сундук."
+  not-a-chest: "&cЭто не сундук."
+  sign-created: "&aМагазин создан! Цена: &e%price% %currency%&a, кол-во: &e%amount%&a."
+  shop-not-found: "&cМагазин не найден."
+  not-enough-items: "&cВ этом магазине недостаточно предметов для покупки!"
+  not-enough-money: "&cУ вас недостаточно %currency%!"
+  bought: "&aВы купили &e%item% x%amount%&a за &e%price% %currency%&a."
+  owner-only-break: "&cЭто чужой магазин!"
+  cannot-open: "&cСундук магазина открывать нельзя. Покупка через табличку."
+sign:
+  line1: "&a[Магазин]"
+  line2: "&f%owner%"
+  line3: "&e%item% x%amount%"
+  line4: "&6Цена: %price% %currency%"
+protection:
+  prevent-break: true
+  prevent-open: true
+
+# Русские названия предметов (по желанию)
+material-names:
+  DIAMOND: "Алмаз"
+  DIAMOND_SWORD: "Алмазный меч"
+  NETHERITE_SWORD: "Незеритовый меч"
+  NETHERITE_AXE: "Незеритовый топор"

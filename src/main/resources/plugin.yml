@@ -1,0 +1,15 @@
+name: ShopAltumMC
+version: 1.0.0
+main: ru.altum.shopaltummc.ShopAltumMCPlugin
+api-version: "1.21"
+author: AltumMC
+commands:
+  shop:
+    description: Main command
+    usage: /shop
+    permission: shopaltummc.command
+permissions:
+  shopaltummc.command:
+    default: true
+  shopaltummc.admin:
+    default: op
