@@ -253,7 +253,7 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
         if (dz == 1) return BlockFace.SOUTH;
         if (dz == -1) return BlockFace.NORTH;
         // fallback
-        return chestFront(chestBlock, Bukkit.getPlayer(UUID.fromString(getChestOwner(chestBlock))).orElse(null));
+        return BlockFace.NORTH;// fallback (should never happen)
     }
 
     private static BlockFace rotateLeft(BlockFace f) {
