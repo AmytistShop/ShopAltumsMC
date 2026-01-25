@@ -1,4 +1,5 @@
 messages:
+  currency: "алм"
   prefix: "&a[Магазин]&r "
   created: "&aМагазин создан!"
   usage: "&cИспользование: /shop set <кол-во> <цена>"

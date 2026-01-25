@@ -39,6 +39,7 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
 
     private NamespacedKey KEY_SHOP;
     private NamespacedKey KEY_OWNER;
+    private NamespacedKey KEY_OWNER_NAME;
     private NamespacedKey KEY_ITEM;
     private NamespacedKey KEY_AMOUNT;
     private NamespacedKey KEY_PRICE;
@@ -53,6 +54,7 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
 
         KEY_SHOP = new NamespacedKey(this, "shop");
         KEY_OWNER = new NamespacedKey(this, "owner");
+        KEY_OWNER_NAME = new NamespacedKey(this, "owner_name");
         KEY_ITEM = new NamespacedKey(this, "item");
         KEY_AMOUNT = new NamespacedKey(this, "amount");
         KEY_PRICE = new NamespacedKey(this, "price");
@@ -146,7 +148,7 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
         // Place sign (in front of chest). If blocked -> try left/right/back.
         Sign sign = placeShopSign(chestBlock, p, sellMat, amount, price);
         if (sign == null) {
-            msg(p, ChatColor.translateAlternateColorCodes('&', "&cНет места для таблички (спереди/сбоку занято)."));
+            msg(p, ChatColor.translateAlternateColorCodes('&', "&cНет места для таблички (спереди сундука занято)."));
             return true;
         }
 
@@ -175,12 +177,17 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
         return null;
     }
 
+    private String safeName(String name, String fallback) {
+        return (name == null || name.isBlank()) ? fallback : name;
+    }
+
     private boolean markChestShop(Block chestBlock, UUID owner, Material item, int amount, int price) {
         BlockState st = chestBlock.getState();
         if (!(st instanceof TileState ts)) return false;
         PersistentDataContainer pdc = ts.getPersistentDataContainer();
         pdc.set(KEY_SHOP, PersistentDataType.BYTE, (byte) 1);
         pdc.set(KEY_OWNER, PersistentDataType.STRING, owner.toString());
+        pdc.set(KEY_OWNER_NAME, PersistentDataType.STRING, safeName(Bukkit.getOfflinePlayer(owner).getName(), owner.toString()));
         pdc.set(KEY_ITEM, PersistentDataType.STRING, item.name());
         pdc.set(KEY_AMOUNT, PersistentDataType.INTEGER, amount);
         pdc.set(KEY_PRICE, PersistentDataType.INTEGER, price);
@@ -188,40 +195,47 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     }
 
     private Sign placeShopSign(Block chestBlock, Player creator, Material item, int amount, int price) {
-        List<Block> spots = signSpots(chestBlock, creator);
-        for (Block spot : spots) {
-            if (!spot.getType().isAir()) continue;
-            BlockData bd = spot.getBlockData();
-            spot.setType(Material.OAK_WALL_SIGN, false);
-            BlockData newBd = spot.getBlockData();
-            if (newBd instanceof WallSign ws) {
-                ws.setFacing(facingForSpot(chestBlock, spot));
-                spot.setBlockData(ws, false);
-            }
+    BlockFace front = chestFront(chestBlock);
+    Block signBlock = chestBlock.getRelative(front);
 
-            BlockState st = spot.getState();
-            if (!(st instanceof Sign sign)) continue;
-
-            // Mark sign as shop sign
-            PersistentDataContainer pdc = sign.getPersistentDataContainer();
-            pdc.set(KEY_SHOP, PersistentDataType.BYTE, (byte) 1);
-            pdc.set(KEY_OWNER, PersistentDataType.STRING, creator.getUniqueId().toString());
-
-            // Text
-            String l1 = color("&f[Магазин]");
-            String l2 = color("&f" + creator.getName());
-            String l3 = color("&c" + itemDisplay(item));
-            String l4 = color("&fЦена: &c" + amount + "&fшт. &c" + price + "% &fалм");
-            sign.setLine(0, l1);
-            sign.setLine(1, l2);
-            sign.setLine(2, l3);
-            sign.setLine(3, l4);
-
-            sign.update(true, false);
-            return sign;
-        }
+    // Строго на лицевой стороне сундука (со стороны замка)
+    if (!signBlock.getType().isAir()) {
         return null;
     }
+
+    signBlock.setType(Material.OAK_WALL_SIGN, false);
+
+    BlockData bd = signBlock.getBlockData();
+    if (bd instanceof WallSign ws) {
+        ws.setFacing(front);
+        signBlock.setBlockData(ws, false);
+    }
+
+    BlockState bs = signBlock.getState();
+    if (!(bs instanceof Sign sign)) {
+        signBlock.setType(Material.AIR, false);
+        return null;
+    }
+
+    String ownerName = safeName(creator.getName(), creator.getUniqueId().toString());
+    String currency = cfg("messages.currency", "алм");
+
+    sign.line(0, Component.text(ChatColor.translateAlternateColorCodes('&', "&f[Магазин]")));
+    sign.line(1, Component.text(ChatColor.translateAlternateColorCodes('&', "&f" + ownerName)));
+    sign.line(2, Component.text(ChatColor.translateAlternateColorCodes('&', "&c" + itemDisplay(item))));
+    sign.line(3, Component.text(ChatColor.translateAlternateColorCodes('&', "&fЦена: &c" + amount + "&fшт. &c" + price + " &f" + currency)));
+
+    PersistentDataContainer pdc = sign.getPersistentDataContainer();
+    pdc.set(KEY_SHOP, PersistentDataType.BYTE, (byte) 1);
+    pdc.set(KEY_OWNER, PersistentDataType.STRING, creator.getUniqueId().toString());
+    pdc.set(KEY_OWNER_NAME, PersistentDataType.STRING, ownerName);
+    pdc.set(KEY_ITEM, PersistentDataType.STRING, item.name());
+    pdc.set(KEY_AMOUNT, PersistentDataType.INTEGER, amount);
+    pdc.set(KEY_PRICE, PersistentDataType.INTEGER, price);
+
+    sign.update(true, false);
+    return sign;
+}
 
     private List<Block> signSpots(Block chestBlock, Player creator) {
         BlockFace front = chestFront(chestBlock, creator);
@@ -310,6 +324,20 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
 
         Block b = e.getClickedBlock();
         Player p = e.getPlayer();
+if (b == null) return;
+
+// Запрещаем открывать сундук магазина покупателям (чтобы не воровали товар)
+if (b.getType() == Material.CHEST && isShopChest(b)) {
+    String ownerUuid = getChestOwner(b);
+    if (ownerUuid != null && !ownerUuid.equals(p.getUniqueId().toString()) && !p.hasPermission("shopaltum.admin")) {
+        e.setCancelled(true);
+        msg(p,
+                cfg("messages.cant_open", "&cНельзя открывать сундук магазина игрока %owner%."),
+                "%owner%", safeName(getOwnerNameFromChest(b), ownerUuid));
+        return;
+    }
+    // владельцу и админам открывать можно
+}
 
         BlockState st = b.getState();
         if (!(st instanceof Sign sign)) return;
@@ -431,14 +459,34 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
         return flag != null && flag == (byte) 1;
     }
 
+    private String getOwnerNameFromChest(Block chestBlock) {
+    BlockState st = chestBlock.getState();
+    if (st instanceof TileState ts) {
+        String n = ts.getPersistentDataContainer().get(KEY_OWNER_NAME, PersistentDataType.STRING);
+        if (n != null && !n.isBlank()) return n;
+        String u = ts.getPersistentDataContainer().get(KEY_OWNER, PersistentDataType.STRING);
+        return ownerName(u);
+    }
+    return null;
+}
+
+private String getOwnerNameFromSign(Sign sign) {
+    String n = sign.getPersistentDataContainer().get(KEY_OWNER_NAME, PersistentDataType.STRING);
+    if (n != null && !n.isBlank()) return n;
+    String u = sign.getPersistentDataContainer().get(KEY_OWNER, PersistentDataType.STRING);
+    return ownerName(u);
+}
+
     private String ownerName(String uuidStr) {
-        try {
-            UUID u = UUID.fromString(uuidStr);
-            Player online = Bukkit.getPlayer(u);
-            if (online != null) return online.getName();
-        } catch (Exception ignored) {}
+    if (uuidStr == null || uuidStr.isBlank()) return "unknown";
+    try {
+        UUID u = UUID.fromString(uuidStr);
+        String n = Bukkit.getOfflinePlayer(u).getName();
+        return safeName(n, uuidStr);
+    } catch (IllegalArgumentException e) {
         return uuidStr;
     }
+}
 
     // ---------------- Messages & Tab ----------------
 
@@ -447,7 +495,26 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     }
     private void msg(Player p, String s) {
         String pref = cfg("messages.prefix");
-        p.sendMessage(color(pref + s));
+        p.sendMessage(color((pref + s).replace("%currency%", cfg("messages.currency", "алм"))));
+    }
+
+    private void msg(Player p, String raw, String... placeholders) {
+        String s = raw;
+        for (int i = 0; i + 1 < placeholders.length; i += 2) {
+            s = s.replace(placeholders[i], placeholders[i + 1]);
+        }
+        s = s.replace("%currency%", cfg("messages.currency", "алм"));
+        msg(p, s);
+    }
+
+    private void msg(Player p, String raw, String... placeholders) {
+        String s = raw;
+        for (int i = 0; i + 1 < placeholders.length; i += 2) {
+            s = s.replace(placeholders[i], placeholders[i + 1]);
+        }
+        // на всякий случай: если где-то осталось %currency%
+        s = s.replace("%currency%", cfg("messages.currency", "алм"));
+        msg(p, s);
     }
     private static String color(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
