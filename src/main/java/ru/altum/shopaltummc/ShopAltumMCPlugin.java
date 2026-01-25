@@ -1,3 +1,4 @@
+
 package ru.altum.shopaltummc;
 
 import org.bukkit.Bukkit;
@@ -6,21 +7,18 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
+import org.bukkit.block.TileState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.type.WallSign;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
@@ -28,39 +26,74 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.BlockIterator;
 
 import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, TabExecutor {
 
-    private NamespacedKey KEY_OWNER;
-    private NamespacedKey KEY_PRICE;
-    private NamespacedKey KEY_AMOUNT;
-    private NamespacedKey KEY_ITEM;
     private NamespacedKey KEY_SHOP;
+    private NamespacedKey KEY_OWNER;
+    private NamespacedKey KEY_ITEM;
+    private NamespacedKey KEY_AMOUNT;
+    private NamespacedKey KEY_PRICE;
 
-    // items.yml (Material -> display name)
-    private File itemsFile;
-    private YamlConfiguration itemsCfg;
+    // Material name -> display
+    private Map<String, String> itemNames = new HashMap<>();
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        saveResourceIfNotExists("items.yml");
 
-        loadItemsConfig();
-
-        KEY_OWNER = new NamespacedKey(this, "owner");
-        KEY_PRICE = new NamespacedKey(this, "price");
-        KEY_AMOUNT = new NamespacedKey(this, "amount");
-        KEY_ITEM = new NamespacedKey(this, "item");
         KEY_SHOP = new NamespacedKey(this, "shop");
+        KEY_OWNER = new NamespacedKey(this, "owner");
+        KEY_ITEM = new NamespacedKey(this, "item");
+        KEY_AMOUNT = new NamespacedKey(this, "amount");
+        KEY_PRICE = new NamespacedKey(this, "price");
+
+        loadItems();
 
         Bukkit.getPluginManager().registerEvents(this, this);
         Objects.requireNonNull(getCommand("shop")).setExecutor(this);
         Objects.requireNonNull(getCommand("shop")).setTabCompleter(this);
+    }
+
+    private void saveResourceIfNotExists(String name) {
+        File f = new File(getDataFolder(), name);
+        if (!f.exists()) {
+            saveResource(name, false);
+        }
+    }
+
+    private void loadItems() {
+        try {
+            File f = new File(getDataFolder(), "items.yml");
+            YamlConfiguration yml = YamlConfiguration.loadConfiguration(f);
+            if (yml.isConfigurationSection("items")) {
+                for (String k : Objects.requireNonNull(yml.getConfigurationSection("items")).getKeys(false)) {
+                    String v = yml.getString("items." + k);
+                    if (v != null) itemNames.put(k.toUpperCase(Locale.ROOT), v);
+                }
+            }
+        } catch (Exception e) {
+            getLogger().warning("Failed to load items.yml: " + e.getMessage());
+        }
+    }
+
+    private String itemDisplay(Material mat) {
+        String s = itemNames.get(mat.name());
+        return (s != null && !s.isBlank()) ? s : beautify(mat.name());
+    }
+
+    private static String beautify(String name) {
+        String[] parts = name.toLowerCase(Locale.ROOT).split("_");
+        return Arrays.stream(parts).map(p -> p.isEmpty() ? p : (p.substring(0,1).toUpperCase(Locale.ROOT)+p.substring(1)))
+                .collect(Collectors.joining(" "));
     }
 
     // ---------------- Commands ----------------
@@ -71,670 +104,359 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
             sender.sendMessage("Only players.");
             return true;
         }
-
-        if (args.length == 0) {
-            msg(p, String.join("\n", cfg().getStringList("messages.help")));
+        if (args.length != 3 || !"set".equalsIgnoreCase(args[0])) {
+            msg(p, cfg("messages.usage"));
             return true;
         }
 
-        if ("reload".equalsIgnoreCase(args[0])) {
-            if (!p.hasPermission("shopaltummc.admin")) {
-                msg(p, cfg().getString("messages.no-permission"));
-                return true;
-            }
-            reloadConfig();
-            msg(p, cfg().getString("messages.reloaded"));
+        int amount;
+        int price;
+        try {
+            amount = Integer.parseInt(args[1]);
+            price = Integer.parseInt(args[2]);
+        } catch (NumberFormatException e) {
+            msg(p, cfg("messages.bad_number"));
+            return true;
+        }
+        if (amount <= 0 || price <= 0) {
+            msg(p, cfg("messages.bad_number"));
             return true;
         }
 
-        if ("set".equalsIgnoreCase(args[0])) {
-            if (args.length < 3) {
-                msg(p, "&cИспользуй: /shop set <цена> <кол-во>");
-                return true;
-            }
-
-            int price;
-            int amount;
-            try {
-                price = Integer.parseInt(args[1]);
-                amount = Integer.parseInt(args[2]);
-            } catch (NumberFormatException ex) {
-                msg(p, "&cЦена и кол-во должны быть числами.");
-                return true;
-            }
-            if (price <= 0 || amount <= 0) {
-                msg(p, "&cЦена и кол-во должны быть больше 0.");
-                return true;
-            }
-
-            Block target = p.getTargetBlockExact(5);
-            if (target == null) {
-                msg(p, cfg().getString("messages.look-at-chest"));
-                return true;
-            }
-            BlockState state = target.getState();
-            if (!(state instanceof Chest chest)) {
-                msg(p, cfg().getString("messages.not-a-chest"));
-                return true;
-            }
-
-            // item for sale = first non-air stack in chest
-            ItemStack item = firstNonAir(chest.getBlockInventory());
-            if (item == null) {
-                msg(p, "&cПоложи в сундук предмет для продажи (хотя бы 1).");
-                return true;
-            }
-
-            // Табличку ставим сами, чтобы не конфликтовать с другими плагинами,
-            // которые могут запрещать/удалять ручную установку табличек на сундук.
-            Sign sign = findAttachedSign(target);
-            if (sign == null) {
-                sign = createWallSignOnChest(target, p);
-                if (sign == null) {
-                    msg(p, "&cНе удалось поставить табличку рядом с сундуком: нет свободного блока сбоку.");
-                    return true;
-                }
-            }
-
-            // Пишем данные магазина прямо в PDC таблички
-            final String shopId = getLocationKey(sign.getLocation());
-            final PersistentDataContainer pdc = sign.getPersistentDataContainer();
-            pdc.set(KEY_SHOP, PersistentDataType.STRING, shopId);
-            pdc.set(KEY_OWNER, PersistentDataType.STRING, p.getUniqueId().toString());
-            pdc.set(KEY_PRICE, PersistentDataType.INTEGER, price);
-            pdc.set(KEY_AMOUNT, PersistentDataType.INTEGER, amount);
-            pdc.set(KEY_ITEM, PersistentDataType.STRING, item.getType().name());
-
-            // Обновим текст таблички под магазин
-            markChestAsShop(target, p.getUniqueId());
-            applySignText(sign, p.getName(), item.getType(), amount, price);
-            sign.update(true, false);
-
-            msg(p, cfg().getString("messages.shop-created"));
+        Block chestBlock = getTargetBlock(p, 6);
+        if (chestBlock == null || chestBlock.getType() != Material.CHEST) {
+            msg(p, cfg("messages.look_at_chest"));
             return true;
         }
 
-        msg(p, String.join("\n", cfg().getStringList("messages.help")));
+        // Create / overwrite shop
+        Material sellMat = firstNonAirItem(chestBlock);
+        if (sellMat == null) {
+            msg(p, ChatColor.translateAlternateColorCodes('&', "&cВ сундуке нет предметов для продажи."));
+            return true;
+        }
+
+        // Mark chest
+        if (!markChestShop(chestBlock, p.getUniqueId(), sellMat, amount, price)) {
+            msg(p, ChatColor.translateAlternateColorCodes('&', "&cНе удалось сохранить данные магазина."));
+            return true;
+        }
+
+        // Place sign (in front of chest). If blocked -> try left/right/back.
+        Sign sign = placeShopSign(chestBlock, p, sellMat, amount, price);
+        if (sign == null) {
+            msg(p, ChatColor.translateAlternateColorCodes('&', "&cНет места для таблички (спереди/сбоку занято)."));
+            return true;
+        }
+
+        msg(p, cfg("messages.created"));
         return true;
+    }
+
+    private Block getTargetBlock(Player p, int maxDistance) {
+        BlockIterator it = new BlockIterator(p, maxDistance);
+        while (it.hasNext()) {
+            Block b = it.next();
+            if (!b.getType().isAir()) {
+                return b;
+            }
+        }
+        return null;
+    }
+
+    private Material firstNonAirItem(Block chestBlock) {
+        BlockState st = chestBlock.getState();
+        if (!(st instanceof org.bukkit.block.Chest chest)) return null;
+        Inventory inv = chest.getBlockInventory();
+        for (ItemStack is : inv.getContents()) {
+            if (is != null && is.getType() != Material.AIR && is.getAmount() > 0) return is.getType();
+        }
+        return null;
+    }
+
+    private boolean markChestShop(Block chestBlock, UUID owner, Material item, int amount, int price) {
+        BlockState st = chestBlock.getState();
+        if (!(st instanceof TileState ts)) return false;
+        PersistentDataContainer pdc = ts.getPersistentDataContainer();
+        pdc.set(KEY_SHOP, PersistentDataType.BYTE, (byte) 1);
+        pdc.set(KEY_OWNER, PersistentDataType.STRING, owner.toString());
+        pdc.set(KEY_ITEM, PersistentDataType.STRING, item.name());
+        pdc.set(KEY_AMOUNT, PersistentDataType.INTEGER, amount);
+        pdc.set(KEY_PRICE, PersistentDataType.INTEGER, price);
+        return ts.update(true, false);
+    }
+
+    private Sign placeShopSign(Block chestBlock, Player creator, Material item, int amount, int price) {
+        List<Block> spots = signSpots(chestBlock, creator);
+        for (Block spot : spots) {
+            if (!spot.getType().isAir()) continue;
+            BlockData bd = spot.getBlockData();
+            spot.setType(Material.OAK_WALL_SIGN, false);
+            BlockData newBd = spot.getBlockData();
+            if (newBd instanceof WallSign ws) {
+                ws.setFacing(facingForSpot(chestBlock, spot));
+                spot.setBlockData(ws, false);
+            }
+
+            BlockState st = spot.getState();
+            if (!(st instanceof Sign sign)) continue;
+
+            // Mark sign as shop sign
+            PersistentDataContainer pdc = sign.getPersistentDataContainer();
+            pdc.set(KEY_SHOP, PersistentDataType.BYTE, (byte) 1);
+            pdc.set(KEY_OWNER, PersistentDataType.STRING, creator.getUniqueId().toString());
+
+            // Text
+            String l1 = color("&f[Магазин]");
+            String l2 = color("&f" + creator.getName());
+            String l3 = color("&c" + itemDisplay(item));
+            String l4 = color("&fЦена: &c" + amount + "&fшт. &c" + price + "% &fалм");
+            sign.setLine(0, l1);
+            sign.setLine(1, l2);
+            sign.setLine(2, l3);
+            sign.setLine(3, l4);
+
+            sign.update(true, false);
+            return sign;
+        }
+        return null;
+    }
+
+    private List<Block> signSpots(Block chestBlock, Player creator) {
+        BlockFace front = chestFront(chestBlock, creator);
+        BlockFace left = rotateLeft(front);
+        BlockFace right = rotateRight(front);
+        BlockFace back = front.getOppositeFace();
+
+        return List.of(
+                chestBlock.getRelative(front),
+                chestBlock.getRelative(left),
+                chestBlock.getRelative(right),
+                chestBlock.getRelative(back)
+        );
+    }
+
+    private BlockFace chestFront(Block chestBlock, Player creator) {
+        BlockData bd = chestBlock.getBlockData();
+        if (bd instanceof Directional d) return d.getFacing();
+        return creator.getFacing();
+    }
+
+    private BlockFace facingForSpot(Block chestBlock, Block spot) {
+        // spot is adjacent to chest. We want sign to face outwards away from chest,
+        // which means facing = direction from chest -> spot.
+        int dx = spot.getX() - chestBlock.getX();
+        int dz = spot.getZ() - chestBlock.getZ();
+        if (dx == 1) return BlockFace.EAST;
+        if (dx == -1) return BlockFace.WEST;
+        if (dz == 1) return BlockFace.SOUTH;
+        if (dz == -1) return BlockFace.NORTH;
+        // fallback
+        return chestFront(chestBlock, Bukkit.getPlayer(UUID.fromString(getChestOwner(chestBlock))).orElse(null));
+    }
+
+    private static BlockFace rotateLeft(BlockFace f) {
+        return switch (f) {
+            case NORTH -> BlockFace.WEST;
+            case WEST -> BlockFace.SOUTH;
+            case SOUTH -> BlockFace.EAST;
+            case EAST -> BlockFace.NORTH;
+            default -> f;
+        };
+    }
+    private static BlockFace rotateRight(BlockFace f) {
+        return switch (f) {
+            case NORTH -> BlockFace.EAST;
+            case EAST -> BlockFace.SOUTH;
+            case SOUTH -> BlockFace.WEST;
+            case WEST -> BlockFace.NORTH;
+            default -> f;
+        };
+    }
+
+    // ---------------- Protection & Buying ----------------
+
+    @EventHandler
+    public void onBreak(BlockBreakEvent e) {
+        Block b = e.getBlock();
+        Player p = e.getPlayer();
+
+        // Protect chest
+        if (isShopChest(b)) {
+            String owner = getChestOwner(b);
+            if (owner != null && !owner.equalsIgnoreCase(p.getUniqueId().toString()) && !p.hasPermission("shop.admin")) {
+                msg(p, cfg("messages.protected").replace("%owner%", ownerName(owner)));
+                e.setCancelled(true);
+            }
+            return;
+        }
+
+        // Protect sign
+        BlockState st = b.getState();
+        if (st instanceof Sign sign && isShopSign(sign)) {
+            String owner = sign.getPersistentDataContainer().get(KEY_OWNER, PersistentDataType.STRING);
+            if (owner != null && !owner.equalsIgnoreCase(p.getUniqueId().toString()) && !p.hasPermission("shop.admin")) {
+                msg(p, cfg("messages.protected").replace("%owner%", ownerName(owner)));
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onInteract(PlayerInteractEvent e) {
+        if (e.getClickedBlock() == null) return;
+        if (e.getAction() != org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK) return;
+
+        Block b = e.getClickedBlock();
+        Player p = e.getPlayer();
+
+        BlockState st = b.getState();
+        if (!(st instanceof Sign sign)) return;
+        if (!isShopSign(sign)) return;
+
+        // Find attached chest: behind the sign (opposite of facing)
+        BlockFace face = BlockFace.NORTH;
+        BlockData bd = b.getBlockData();
+        if (bd instanceof WallSign ws) face = ws.getFacing();
+        Block chestBlock = b.getRelative(face.getOppositeFace());
+        if (!isShopChest(chestBlock)) return;
+
+        String owner = getChestOwner(chestBlock);
+        if (owner != null && owner.equalsIgnoreCase(p.getUniqueId().toString())) {
+            msg(p, cfg("messages.self_buy"));
+            e.setCancelled(true);
+            return;
+        }
+
+        ShopData data = readShopData(chestBlock);
+        if (data == null) return;
+
+        if (!takeItems(chestBlock, data.item, data.amount)) {
+            msg(p, cfg("messages.not_enough"));
+            e.setCancelled(true);
+            return;
+        }
+
+        // Here you can integrate economy. For now: just give items for "price" diamonds from player.
+        if (!takeDiamonds(p, data.price)) {
+            // rollback items back into chest
+            giveItemsToChest(chestBlock, data.item, data.amount);
+            msg(p, cfg("messages.no_money"));
+            e.setCancelled(true);
+            return;
+        }
+
+        p.getInventory().addItem(new ItemStack(data.item, data.amount));
+        msg(p, cfg("messages.bought")
+                .replace("%amount%", String.valueOf(data.amount))
+                .replace("%item%", itemDisplay(data.item))
+                .replace("%price%", String.valueOf(data.price)));
+        e.setCancelled(true);
+    }
+
+    private boolean takeDiamonds(Player p, int price) {
+        int need = price;
+        ItemStack[] inv = p.getInventory().getContents();
+        for (int i = 0; i < inv.length; i++) {
+            ItemStack is = inv[i];
+            if (is == null || is.getType() != Material.DIAMOND) continue;
+            int take = Math.min(is.getAmount(), need);
+            is.setAmount(is.getAmount() - take);
+            need -= take;
+            if (is.getAmount() <= 0) inv[i] = null;
+            if (need <= 0) break;
+        }
+        p.getInventory().setContents(inv);
+        return need <= 0;
+    }
+
+    private boolean takeItems(Block chestBlock, Material mat, int amount) {
+        BlockState st = chestBlock.getState();
+        if (!(st instanceof org.bukkit.block.Chest chest)) return false;
+        Inventory inv = chest.getBlockInventory();
+        int have = 0;
+        for (ItemStack is : inv.getContents()) {
+            if (is != null && is.getType() == mat) have += is.getAmount();
+        }
+        if (have < amount) return false;
+
+        int need = amount;
+        for (int i = 0; i < inv.getSize(); i++) {
+            ItemStack is = inv.getItem(i);
+            if (is == null || is.getType() != mat) continue;
+            int take = Math.min(is.getAmount(), need);
+            is.setAmount(is.getAmount() - take);
+            need -= take;
+            if (is.getAmount() <= 0) inv.setItem(i, null);
+            if (need <= 0) break;
+        }
+        return true;
+    }
+
+    private void giveItemsToChest(Block chestBlock, Material mat, int amount) {
+        BlockState st = chestBlock.getState();
+        if (!(st instanceof org.bukkit.block.Chest chest)) return;
+        chest.getBlockInventory().addItem(new ItemStack(mat, amount));
+    }
+
+    private boolean isShopChest(Block b) {
+        BlockState st = b.getState();
+        if (!(st instanceof TileState ts)) return false;
+        Byte flag = ts.getPersistentDataContainer().get(KEY_SHOP, PersistentDataType.BYTE);
+        return flag != null && flag == (byte) 1;
+    }
+
+    private String getChestOwner(Block b) {
+        BlockState st = b.getState();
+        if (!(st instanceof TileState ts)) return null;
+        return ts.getPersistentDataContainer().get(KEY_OWNER, PersistentDataType.STRING);
+    }
+
+    private ShopData readShopData(Block b) {
+        BlockState st = b.getState();
+        if (!(st instanceof TileState ts)) return null;
+        PersistentDataContainer pdc = ts.getPersistentDataContainer();
+        String itemName = pdc.get(KEY_ITEM, PersistentDataType.STRING);
+        Integer amount = pdc.get(KEY_AMOUNT, PersistentDataType.INTEGER);
+        Integer price = pdc.get(KEY_PRICE, PersistentDataType.INTEGER);
+        if (itemName == null || amount == null || price == null) return null;
+        Material mat = Material.matchMaterial(itemName);
+        if (mat == null) return null;
+        return new ShopData(mat, amount, price);
+    }
+
+    private boolean isShopSign(Sign sign) {
+        Byte flag = sign.getPersistentDataContainer().get(KEY_SHOP, PersistentDataType.BYTE);
+        return flag != null && flag == (byte) 1;
+    }
+
+    private String ownerName(String uuidStr) {
+        try {
+            UUID u = UUID.fromString(uuidStr);
+            Player online = Bukkit.getPlayer(u);
+            if (online != null) return online.getName();
+        } catch (Exception ignored) {}
+        return uuidStr;
+    }
+
+    // ---------------- Messages & Tab ----------------
+
+    private String cfg(String path) {
+        return Objects.requireNonNullElse(getConfig().getString(path), "");
+    }
+    private void msg(Player p, String s) {
+        String pref = cfg("messages.prefix");
+        p.sendMessage(color(pref + s));
+    }
+    private static String color(String s) {
+        return ChatColor.translateAlternateColorCodes('&', s);
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        if (args.length == 1) return Arrays.asList("set", "reload");
+        if (args.length == 1) return List.of("set", "reload");
         return Collections.emptyList();
     }
 
-    // ---------------- Events ----------------
-
-    @EventHandler
-    public void onSignClick(PlayerInteractEvent e) {
-        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (e.getClickedBlock() == null) return;
-
-        BlockState st = e.getClickedBlock().getState();
-        if (!(st instanceof Sign sign)) return;
-
-        Player p = e.getPlayer();
-
-        // If this is a shop sign -> buy
-        if (isShopSign(sign)) {
-            e.setCancelled(true);
-
-            ShopData data = readShop(sign);
-            if (data == null) {
-                msg(p, cfg().getString("messages.shop-not-found"));
-                return;
-            }
-
-            
-if (data.owner != null && data.owner.equals(p.getUniqueId())) {
-    msg(p, "&cНельзя покупать у самого себя!");
-    return;
-}
-
-Chest chest = data.findChest();
-            if (chest == null) {
-                msg(p, cfg().getString("messages.shop-not-found"));
-                return;
-            }
-
-            ItemStack prototype = firstNonAir(chest.getBlockInventory());
-            if (prototype == null) {
-                msg(p, cfg().getString("messages.not-enough-items"));
-                return;
-            }
-
-            int available = countSimilar(chest.getBlockInventory(), prototype);
-            if (available < data.amount) {
-                msg(p, cfg().getString("messages.not-enough-items"));
-                return;
-            }
-
-            Material currencyMat = getCurrencyMaterial();
-            int money = countMaterial(p.getInventory(), currencyMat);
-            if (money < data.price) {
-                msg(p, cfg().getString("messages.not-enough-money"));
-                // optional: close inventory (not needed since click sign)
-                return;
-            }
-
-            // take money from player, put into chest
-            removeMaterial(p.getInventory(), currencyMat, data.price);
-            chest.getBlockInventory().addItem(new ItemStack(currencyMat, data.price));
-
-            // give items to player, remove from chest
-            ItemStack give = prototype.clone();
-            give.setAmount(data.amount);
-            if (!canFit(p.getInventory(), give)) {
-                // refund if cannot fit
-                chest.getBlockInventory().removeItem(new ItemStack(currencyMat, data.price));
-                p.getInventory().addItem(new ItemStack(currencyMat, data.price));
-                msg(p, "&cОсвободи место в инвентаре.");
-                return;
-            }
-
-            removeSimilar(chest.getBlockInventory(), prototype, data.amount);
-            p.getInventory().addItem(give);
-
-            String itemName = prettyItemName(give.getType());
-            msg(p, cfg().getString("messages.bought")
-                    .replace("%item%", itemName)
-                    .replace("%amount%", String.valueOf(data.amount))
-                    .replace("%price%", String.valueOf(data.price))
-                    .replace("%currency%", currencyDisplay()));
-            return;
-        }
-
-    }
-
-    @EventHandler
-    public void onBreak(BlockBreakEvent e) {
-        if (!cfg().getBoolean("protection.prevent-break", true)) return;
-
-        BlockState st = e.getBlock().getState();
-        Player p = e.getPlayer();
-
-        // protect sign blocks that are shop signs
-        if (st instanceof Sign sign && isShopSign(sign)) {
-            ShopData data = readShop(sign);
-            if (data == null) return;
-
-            if (!isOwnerOrAdmin(p, data.owner)) {
-                e.setCancelled(true);
-                msg(p, cfg().getString("messages.owner-only-break"));
-            }
-            return;
-        }
-
-        // protect chest blocks that are linked to a shop
-        if (st instanceof Chest chest) {
-            UUID owner = getChestOwnerIfShop(e.getBlock());
-            if (owner == null) owner = findOwnerForChest(chest);
-            if (owner == null) return;
-
-            if (!isOwnerOrAdmin(p, owner)) {
-                e.setCancelled(true);
-                msg(p, cfg().getString("messages.owner-only-break"));
-            } else {
-                // владелец ломает сундук — чистим метки и убираем табличку (если найдём)
-                removeShopMarkers(e.getBlock());
-            }
-        }
-    }
-
-    @EventHandler
-    public void onChestOpen(PlayerInteractEvent e) {
-        if (!cfg().getBoolean("protection.prevent-open", true)) return;
-        if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (e.getClickedBlock() == null) return;
-
-        BlockState st = e.getClickedBlock().getState();
-        if (!(st instanceof Chest chest)) return;
-
-        UUID owner = findOwnerForChest(chest);
-        if (owner == null) return;
-
-        Player p = e.getPlayer();
-        if (!isOwnerOrAdmin(p, owner)) {
-            e.setCancelled(true);
-            msg(p, cfg().getString("messages.cannot-open"));
-        }
-    }
-
-    // ---------------- Helpers ----------------
-
-    private FileConfiguration cfg() { return getConfig(); }
-
-    private void msg(Player p, String text) {
-        if (text == null) return;
-        String prefix = cfg().getString("messages.prefix", "");
-        String colored = color(prefix + text);
-        for (String line : colored.split("\n")) p.sendMessage(line);
-    }
-
-    private String color(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s == null ? "" : s);
-    }
-
-    private String strip(String s) {
-        return ChatColor.stripColor(s == null ? "" : s).trim();
-    }
-
-    private Material getCurrencyMaterial() {
-        String name = cfg().getString("currency.material", "DIAMOND");
-        try { return Material.valueOf(name.toUpperCase(Locale.ROOT)); }
-        catch (Exception e) { return Material.DIAMOND; }
-    }
-
-    private String currencyDisplay() {
-        return cfg().getString("currency.display", "алмазов");
-    }
-
-    private ItemStack firstNonAir(Inventory inv) {
-        for (ItemStack it : inv.getContents()) {
-            if (it != null && it.getType() != Material.AIR && it.getAmount() > 0) return it;
-        }
-        return null;
-    }
-
-    private int countSimilar(Inventory inv, ItemStack proto) {
-        int total = 0;
-        for (ItemStack it : inv.getContents()) {
-            if (it != null && it.isSimilar(proto)) total += it.getAmount();
-        }
-        return total;
-    }
-
-    private void removeSimilar(Inventory inv, ItemStack proto, int amount) {
-        int left = amount;
-        ItemStack[] items = inv.getContents();
-        for (int i = 0; i < items.length && left > 0; i++) {
-            ItemStack it = items[i];
-            if (it == null || !it.isSimilar(proto)) continue;
-            int take = Math.min(left, it.getAmount());
-            it.setAmount(it.getAmount() - take);
-            left -= take;
-            if (it.getAmount() <= 0) items[i] = null;
-        }
-        inv.setContents(items);
-    }
-
-    private int countMaterial(Inventory inv, Material mat) {
-        int total = 0;
-        for (ItemStack it : inv.getContents()) {
-            if (it != null && it.getType() == mat) total += it.getAmount();
-        }
-        return total;
-    }
-
-    private void removeMaterial(Inventory inv, Material mat, int amount) {
-        int left = amount;
-        ItemStack[] items = inv.getContents();
-        for (int i = 0; i < items.length && left > 0; i++) {
-            ItemStack it = items[i];
-            if (it == null || it.getType() != mat) continue;
-            int take = Math.min(left, it.getAmount());
-            it.setAmount(it.getAmount() - take);
-            left -= take;
-            if (it.getAmount() <= 0) items[i] = null;
-        }
-        inv.setContents(items);
-    }
-
-    private boolean canFit(Inventory inv, ItemStack stack) {
-        HashMap<Integer, ItemStack> leftovers = inv.addItem(stack.clone());
-        if (leftovers.isEmpty()) return true;
-        // rollback: remove what we added
-        inv.removeItem(stack);
-        return false;
-    }
-
-    private boolean isOwnerOrAdmin(Player p, UUID owner) {
-        return p.getUniqueId().equals(owner) || p.hasPermission("shopaltummc.admin") || p.isOp();
-    }
-
-    private boolean isShopSign(Sign sign) {
-        PersistentDataContainer pdc = sign.getPersistentDataContainer();
-        return pdc.has(KEY_OWNER, PersistentDataType.STRING) && pdc.has(KEY_PRICE, PersistentDataType.INTEGER);
-    }
-
-    private void markChestAsShop(Block chestBlock, UUID owner) {
-        BlockState st = chestBlock.getState();
-        if (!(st instanceof org.bukkit.block.TileState ts)) {
-            return;
-        }
-        PersistentDataContainer pdc = ts.getPersistentDataContainer();
-        pdc.set(KEY_SHOP, PersistentDataType.BYTE, (byte) 1);
-        pdc.set(KEY_OWNER, PersistentDataType.STRING, owner.toString());
-        ts.update(true, false);
-    }
-
-    private UUID getChestOwnerIfShop(Block chestBlock) {
-        BlockState st = chestBlock.getState();
-        if (!(st instanceof Chest chest)) return null;
-        PersistentDataContainer pdc = chest.getPersistentDataContainer();
-
-        // Preferred: owner stored on chest
-        if (pdc.has(KEY_SHOP, PersistentDataType.BYTE) && pdc.has(KEY_OWNER, PersistentDataType.STRING)) {
-            String s = pdc.get(KEY_OWNER, PersistentDataType.STRING);
-            try { return s == null ? null : UUID.fromString(s); } catch (IllegalArgumentException ignored) { }
-        }
-
-        // Fallback: owner stored on attached shop sign
-        return findOwnerForChest(chest);
-    }
-
-    private void clearChestMarkers(Block chestBlock) {
-        BlockState st = chestBlock.getState();
-        if (!(st instanceof org.bukkit.block.TileState ts)) {
-            return;
-        }
-        PersistentDataContainer pdc = ts.getPersistentDataContainer();
-        pdc.remove(KEY_SHOP);
-        pdc.remove(KEY_OWNER);
-        ts.update(true, false);
-    }
-
-    private void removeShopMarkers(Block chestBlock) {
-        // Remove attached shop sign (if any)
-        Sign sign = findAttachedSign(chestBlock);
-        if (sign != null && isShopSign(sign)) {
-            sign.getBlock().setType(Material.AIR);
-        }
-        clearChestMarkers(chestBlock);
-    }
-
-    private ShopData readShop(Sign sign) {
-        PersistentDataContainer pdc = sign.getPersistentDataContainer();
-        String ownerStr = pdc.get(KEY_OWNER, PersistentDataType.STRING);
-        Integer price = pdc.get(KEY_PRICE, PersistentDataType.INTEGER);
-        Integer amount = pdc.get(KEY_AMOUNT, PersistentDataType.INTEGER);
-        String itemKey = pdc.get(KEY_ITEM, PersistentDataType.STRING);
-        if (ownerStr == null || price == null || amount == null) return null;
-
-        UUID owner;
-        try { owner = UUID.fromString(ownerStr); } catch (Exception e) { return null; }
-
-        Material mat = Material.AIR;
-        if (itemKey != null) {
-            try {
-                mat = Material.matchMaterial(itemKey);
-            } catch (Exception ignored) {}
-        }
-        if (mat == null) mat = Material.AIR;
-
-        return new ShopData(owner, price, amount, sign.getLocation(), mat);
-    }
-
-    /**
-     * Ищет табличку, которая прикреплена к сундуку (стеновая или стоящая на верхнем блоке).
-     * Нужна, чтобы создание магазина происходило только по команде, без дополнительных кликов.
-     */
-    
-    /**
-     * Ставит табличку сбоку от сундука (WALL_SIGN) и возвращает её.
-     * Нужна, чтобы не зависеть от ручной установки таблички (конфликты с другими плагинами).
-     */
-        private Sign createWallSignOnChest(Block chestBlock, Player creator) {
-        // ВАЖНО: на сундук НЕЛЬЗЯ штатно повесить wall_sign (на многих версиях он "не прикрепляется" к сундуку
-        // и выглядит как табличка "в воздухе" / либо ломается физикой). Поэтому делаем табличку СВЕРХУ сундука.
-        // Это еще и убирает конфликты с плагинами, которые блокируют установку табличек на сундук.
-
-        BlockFace front = getChestFrontFace(chestBlock, creator);
-
-        // 1) пробуем поставить стоящую табличку сверху сундука
-        Block top = chestBlock.getRelative(BlockFace.UP);
-        if (top.getType().isAir()) {
-            top.setType(Material.OAK_SIGN, false);
-
-            BlockState st = top.getState();
-            if (st instanceof Sign sign) {
-                BlockData bd = top.getBlockData();
-                if (bd instanceof org.bukkit.block.data.type.Sign sbd) {
-                    // rotation — это куда "смотрит" табличка
-                    sbd.setRotation(front);
-                    sbd.setWaterlogged(false);
-                    top.setBlockData(sbd, false);
-                }
-                sign.update(true, false);
-                return sign;
-            }
-
-            // если почему-то не Sign — откатываем
-            top.setType(Material.AIR, false);
-        }
-
-        // 2) fallback: ставим wall_sign на блок перед сундуком, но ТОЛЬКО если он реально может стоять (есть воздух)
-        Block signBlock = chestBlock.getRelative(front);
-        if (!signBlock.getType().isAir()) return null;
-
-        signBlock.setType(Material.OAK_WALL_SIGN, false);
-        BlockState st2 = signBlock.getState();
-        if (!(st2 instanceof Sign sign2)) {
-            signBlock.setType(Material.AIR, false);
-            return null;
-        }
-
-        BlockData bd2 = signBlock.getBlockData();
-        if (bd2 instanceof WallSign ws) {
-            ws.setFacing(front);
-            ws.setWaterlogged(false);
-            signBlock.setBlockData(ws, false);
-        }
-        sign2.update(true, false);
-        return sign2;
-    }
-
-    private BlockFace getChestFrontFace(Block chestBlock, Player creator) {
-        BlockData data = chestBlock.getBlockData();
-        if (data instanceof Directional d) return d.getFacing();
-        return creator.getFacing();
-    }
-private Sign findAttachedSign(Block chestBlock) {
-        // 1) табличка сверху
-        Block above = chestBlock.getRelative(BlockFace.UP);
-        BlockState aboveState = above.getState();
-        if (aboveState instanceof Sign s) {
-            return s;
-        }
-
-        // 2) стеновые таблички по сторонам
-        for (BlockFace face : new BlockFace[]{BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST}) {
-            Block sb = chestBlock.getRelative(face);
-            BlockState st = sb.getState();
-            if (!(st instanceof Sign sign)) continue;
-
-            BlockData data = sb.getBlockData();
-            if (data instanceof org.bukkit.block.data.type.WallSign ws) {
-                // у WallSign facing — это куда "смотрит" табличка; прикреплена она к противоположной стороне
-                BlockFace attachedTo = ws.getFacing().getOppositeFace();
-                if (sb.getRelative(attachedTo).equals(chestBlock)) {
-                    return sign;
-                }
-            } else {
-                // на случай других реализаций — просто принимаем как "рядом"
-                return sign;
-            }
-        }
-
-        return null;
-    }
-
-    private UUID findOwnerForChest(Chest chest) {
-        // look for shop signs within 1 block around the chest (walls)
-        for (Block b : nearbyBlocks(chest.getBlock(), 2)) {
-            BlockState st = b.getState();
-            if (!(st instanceof Sign s)) continue;
-            if (!isShopSign(s)) continue;
-
-            ShopData data = readShop(s);
-            if (data == null) continue;
-
-            // If sign is attached near this chest, accept it
-            if (data.isNearChest(chest.getBlock())) return data.owner;
-        }
-        return null;
-    }
-
-    private List<Block> nearbyBlocks(Block center, int radius) {
-        List<Block> out = new ArrayList<>();
-        for (int x = -radius; x <= radius; x++) {
-            for (int y = -radius; y <= radius; y++) {
-                for (int z = -radius; z <= radius; z++) {
-                    out.add(center.getWorld().getBlockAt(center.getX()+x, center.getY()+y, center.getZ()+z));
-                }
-            }
-        }
-        return out;
-    }
-
-    private void applySignText(Sign sign, String ownerName, Material mat, int amount, int price) {
-        String l1 = cfg().getString("sign.line1", "&a[Магазин]");
-        String l2 = cfg().getString("sign.line2", "&f%owner%").replace("%owner%", ownerName);
-        String l3 = cfg().getString("sign.line3", "&e%item% x%amount%")
-                .replace("%item%", prettyItemName(mat))
-                .replace("%amount%", String.valueOf(amount));
-        String l4 = cfg().getString("sign.line4", "&6Цена: %price% %currency%")
-                .replace("%price%", String.valueOf(price))
-                .replace("%currency%", currencyDisplay());
-
-        sign.setLine(0, color(l1));
-        sign.setLine(1, color(l2));
-        sign.setLine(2, color(l3));
-        sign.setLine(3, color(l4));
-    }
-
-        private String prettyItemName(Material mat) {
-        // 1) items.yml (можно редактировать без перекомпиляции)
-        if (itemsCfg != null) {
-            String fromFile = itemsCfg.getString(mat.name());
-            if (fromFile != null && !fromFile.isBlank()) return color(fromFile);
-        }
-
-        // 2) config.yml material-names (старый способ)
-        String cfgName = getConfig().getString("material-names." + mat.name());
-        if (cfgName != null && !cfgName.isBlank()) return color(cfgName);
-
-        // 3) fallback: читаемое имя из enum
-        return prettyEnumName(mat.name());
-    }
-
-    // ---------------- Data ----------------
-
-    private static final class ShopData {
-        final UUID owner;
-        final int price;
-        final int amount;
-        final org.bukkit.Location signLoc;
-        final Material itemMat;
-
-        ShopData(UUID owner, int price, int amount, org.bukkit.Location signLoc, Material itemMat) {
-            this.owner = owner;
-            this.price = price;
-            this.amount = amount;
-            this.signLoc = signLoc;
-            this.itemMat = itemMat;
-        }
-
-        Chest findChest() {
-            // search for chest near sign
-            Block signBlock = signLoc.getBlock();
-            for (Block b : NearbyBlocksCompat.getNearbyBlocks(signBlock,2,2,2)) {
-                if (b.getState() instanceof Chest chest) return chest;
-            }
-            return null;
-        }
-
-        boolean isNearChest(Block chestBlock) {
-            return chestBlock.getWorld().equals(signLoc.getWorld())
-                    && chestBlock.getLocation().distanceSquared(signLoc) <= 9; // within 3 blocks
-        }
-    }
-
-    // Paper adds Block#getNearbyBlocks in newer versions; provide fallback by extension
-    private static final class ChestLocator {
-        static final Map<String, org.bukkit.Location> locs = new HashMap<>();
-        static Chest find(String key) {
-            org.bukkit.Location loc = locs.get(key);
-            if (loc == null) {
-                // cannot resolve without stored location; key format: world;x;y;z
-                String[] p = key.split(";");
-                if (p.length != 4) return null;
-                var world = Bukkit.getWorld(p[0]);
-                if (world == null) return null;
-                loc = new org.bukkit.Location(world, Integer.parseInt(p[1]), Integer.parseInt(p[2]), Integer.parseInt(p[3]));
-                locs.put(key, loc);
-            }
-            BlockState st = loc.getBlock().getState();
-            return (st instanceof Chest c) ? c : null;
-        }
-    }
-
-    // helper to store chest location key
-    private String getLocationKey(org.bukkit.Location loc) {
-        return loc.getWorld().getName() + ";" + loc.getBlockX() + ";" + loc.getBlockY() + ";" + loc.getBlockZ();
-    }
-
-    // add getNearbyBlocks compatibility
-    private static final class NearbyBlocksCompat {
-        static Iterable<Block> getNearbyBlocks(Block b, int x, int y, int z) {
-            List<Block> out = new ArrayList<>();
-            for (int dx=-x; dx<=x; dx++)
-                for (int dy=-y; dy<=y; dy++)
-                    for (int dz=-z; dz<=z; dz++)
-                        out.add(b.getWorld().getBlockAt(b.getX()+dx,b.getY()+dy,b.getZ()+dz));
-            return out;
-        }
-    }
-
-    // Extension for older API: use our compat method
-    private static class BlockExt {
-        static Iterable<Block> nearby(Block b, int x, int y, int z) { return NearbyBlocksCompat.getNearbyBlocks(b,x,y,z); }
-    }
-
-    private void loadItemsConfig() {
-        if (!getDataFolder().exists()) getDataFolder().mkdirs();
-        itemsFile = new File(getDataFolder(), "items.yml");
-
-        // автогенерация полного items.yml под текущую версию сервера (первый запуск)
-        if (!itemsFile.exists()) {
-            itemsCfg = new YamlConfiguration();
-            for (Material m : Material.values()) {
-                itemsCfg.set(m.name(), prettyEnumName(m.name()));
-            }
-            try { itemsCfg.save(itemsFile); } catch (Exception ignored) {}
-        }
-
-        itemsCfg = YamlConfiguration.loadConfiguration(itemsFile);
-
-        // дописываем новые материалы после обновления сервера/ядра
-        boolean changed = false;
-        for (Material m : Material.values()) {
-            if (!itemsCfg.contains(m.name())) {
-                itemsCfg.set(m.name(), prettyEnumName(m.name()));
-                changed = true;
-            }
-        }
-        if (changed) {
-            try { itemsCfg.save(itemsFile); } catch (Exception ignored) {}
-        }
-    }
-
-    private String prettyEnumName(String enumName) {
-        String s = enumName.toLowerCase(Locale.ROOT).replace('_', ' ');
-        StringBuilder out = new StringBuilder(s.length());
-        boolean up = true;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (up && c >= 'a' && c <= 'z') {
-                out.append((char) (c - 32));
-                up = false;
-            } else {
-                out.append(c);
-            }
-            if (c == ' ') up = true;
-        }
-        return out.toString();
-    }
-
+    private record ShopData(Material item, int amount, int price) {}
 }
