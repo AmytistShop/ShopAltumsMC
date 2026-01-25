@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
+import net.kyori.adventure.text.Component;
 
 public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, TabExecutor {
 
@@ -195,7 +196,7 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     }
 
     private Sign placeShopSign(Block chestBlock, Player creator, Material item, int amount, int price) {
-    BlockFace front = chestFront(chestBlock);
+    BlockFace front = chestFront(chestBlock, creator);
     Block signBlock = chestBlock.getRelative(front);
 
     // Строго на лицевой стороне сундука (со стороны замка)
@@ -490,8 +491,13 @@ private String getOwnerNameFromSign(Sign sign) {
 
     // ---------------- Messages & Tab ----------------
 
-    private String cfg(String path) {
-        return Objects.requireNonNullElse(getConfig().getString(path), "");
+    private String cfg(String key) {
+        return cfg(key, "");
+    }
+
+    private String cfg(String key, String def) {
+        String v = getConfig().getString(key);
+        return (v == null || v.isEmpty()) ? def : v;
     }
     private void msg(Player p, String s) {
         String pref = cfg("messages.prefix");
@@ -507,15 +513,6 @@ private String getOwnerNameFromSign(Sign sign) {
         msg(p, s);
     }
 
-    private void msg(Player p, String raw, String... placeholders) {
-        String s = raw;
-        for (int i = 0; i + 1 < placeholders.length; i += 2) {
-            s = s.replace(placeholders[i], placeholders[i + 1]);
-        }
-        // на всякий случай: если где-то осталось %currency%
-        s = s.replace("%currency%", cfg("messages.currency", "алм"));
-        msg(p, s);
-    }
     private static String color(String s) {
         return ChatColor.translateAlternateColorCodes('&', s);
     }
