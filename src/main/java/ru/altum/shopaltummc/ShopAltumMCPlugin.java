@@ -712,7 +712,7 @@ ensureDefaultItemsYml();
     }
 
     private String trHoloItem(org.bukkit.Material mat) {
-        return hologramItemNames.getOrDefault(mat, trItem(trHoloItem(mat));
+        return hologramItemNames.getOrDefault(mat, trItem(mat));
     }
 
 }
