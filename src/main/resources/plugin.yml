@@ -1,12 +1,17 @@
 name: ShopAltumMC
-main: ru.altum.shopaltummc.ShopAltumMCPlugin
 version: 1.0.0
+main: ru.altum.shopaltummc.ShopAltumMCPlugin
 api-version: '1.21'
 author: Altum
+
 commands:
   shop:
-    description: Chest shop
-    usage: /shop set <amount> <price>
+    description: Магазин на сундуке + табличка + голограмма
+    usage: /shop set <цена> <количество> [сообщение...]
+    permission: shopaltum.use
+
 permissions:
-  shop.admin:
+  shopaltum.use:
+    default: true
+  shopaltum.admin:
     default: op
