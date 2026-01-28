@@ -55,7 +55,10 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        ensureDefaultItemsYml();
+                saveResource("item.yml", false);
+        saveResource("hologramitem.yml", false);
+        loadItemTranslations();
+ensureDefaultItemsYml();
 
         KEY_SHOP = new NamespacedKey(this, "shop");
         KEY_OWNER_UUID = new NamespacedKey(this, "owner_uuid");
@@ -658,4 +661,58 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     private String color(String s) {
         return ChatColor.translateAlternateColorCodes('&', s == null ? "" : s);
     }
+
+    private void loadItemTranslations() {
+        itemNames.clear();
+        hologramItemNames.clear();
+
+        // item.yml (обычные названия)
+        try {
+            File f = new File(getDataFolder(), "item.yml");
+            if (f.exists()) {
+                var y = YamlConfiguration.loadConfiguration(f);
+                var sec = y.getConfigurationSection("items");
+                if (sec != null) {
+                    for (String k : sec.getKeys(false)) {
+                        try {
+                            org.bukkit.Material m = org.bukkit.Material.valueOf(k.toUpperCase());
+                            String name = sec.getString(k, null);
+                            if (name != null) itemNames.put(m, name);
+                        } catch (IllegalArgumentException ignored) {}
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            getLogger().warning("Не удалось загрузить item.yml: " + ex.getMessage());
+        }
+
+        // hologramitem.yml (для голограмм)
+        try {
+            File f = new File(getDataFolder(), "hologramitem.yml");
+            if (f.exists()) {
+                var y = YamlConfiguration.loadConfiguration(f);
+                var sec = y.getConfigurationSection("items");
+                if (sec != null) {
+                    for (String k : sec.getKeys(false)) {
+                        try {
+                            org.bukkit.Material m = org.bukkit.Material.valueOf(k.toUpperCase());
+                            String name = sec.getString(k, null);
+                            if (name != null) hologramItemNames.put(m, name);
+                        } catch (IllegalArgumentException ignored) {}
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            getLogger().warning("Не удалось загрузить hologramitem.yml: " + ex.getMessage());
+        }
+    }
+
+    private String trItem(org.bukkit.Material mat) {
+        return itemNames.getOrDefault(mat, prettifyEnum(mat));
+    }
+
+    private String trHoloItem(org.bukkit.Material mat) {
+        return hologramItemNames.getOrDefault(mat, trItem(trHoloItem(mat));
+    }
+
 }
