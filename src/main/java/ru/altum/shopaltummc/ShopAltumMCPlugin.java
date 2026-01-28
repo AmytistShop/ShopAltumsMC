@@ -51,14 +51,16 @@ public final class ShopAltumMCPlugin extends JavaPlugin implements Listener, Tab
     private NamespacedKey KEY_HOLOS; // comma-separated armorstand UUIDs
 
     private final Map<String, String> itemNames = new HashMap<>();
+    private final EnumMap<Material, String> hologramItemNames = new EnumMap<>(Material.class);
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
                 saveResource("item.yml", false);
         saveResource("hologramitem.yml", false);
-        loadItemTranslations();
 ensureDefaultItemsYml();
+
+        ensureDefaultHologramItemsYml();
 
         KEY_SHOP = new NamespacedKey(this, "shop");
         KEY_OWNER_UUID = new NamespacedKey(this, "owner_uuid");
@@ -70,6 +72,7 @@ ensureDefaultItemsYml();
         KEY_HOLOS = new NamespacedKey(this, "holos");
 
         loadItemsYml();
+        loadHologramItemsYml();
 
         Bukkit.getPluginManager().registerEvents(this, this);
 
@@ -98,6 +101,7 @@ ensureDefaultItemsYml();
             }
             reloadConfig();
             loadItemsYml();
+        loadHologramItemsYml();
             p.sendMessage(color(prefix() + cfg("messages.reloaded")));
             return true;
         }
@@ -432,7 +436,7 @@ ensureDefaultItemsYml();
         if (!(st instanceof Sign sign)) return false;
 
         String currency = cfg("messages.currency");
-        String itemName = getItemName(item);
+        String itemName = getHologramItemName(item);
 
         List<String> lines = getConfig().getStringList("sign.lines");
         if (lines == null || lines.size() < 4) {
@@ -469,7 +473,7 @@ ensureDefaultItemsYml();
         cleanupHologram(chestBlock);
 
         String ownerName = owner.getName();
-        String itemName = getItemName(item);
+        String itemName = getHologramItemName(item);
 
         List<String> lines = getConfig().getStringList("hologram.lines");
         if (lines == null || lines.isEmpty()) {
@@ -553,153 +557,58 @@ ensureDefaultItemsYml();
 
     private void loadItemsYml() {
         itemNames.clear();
+        File file = new File(getDataFolder(), "items.yml");
+        if (!file.exists()) {
+            return;
+        }
         try {
-            File f = new File(getDataFolder(), "items.yml");
-            if (!f.exists()) return;
-            YamlConfiguration yml = YamlConfiguration.loadConfiguration(f);
-            if (yml.getConfigurationSection("items") == null) return;
-            for (String key : yml.getConfigurationSection("items").getKeys(false)) {
-                String v = yml.getString("items." + key);
-                if (v != null && !v.isBlank()) itemNames.put(key.toUpperCase(Locale.ROOT), v);
+            YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+            ConfigurationSection sec = yml.getConfigurationSection("items");
+            if (sec == null) {
+                return;
             }
-        } catch (Exception e) {
-            getLogger().warning("Failed to load items.yml: " + e.getMessage());
-        }
-    }
-
-    private String getItemName(Material mat) {
-        if (mat == null) return "?";
-        String v = itemNames.get(mat.name().toUpperCase(Locale.ROOT));
-        if (v != null) return v;
-        return prettyMaterial(mat.name());
-    }
-
-    private String prettyMaterial(String name) {
-        String s = name.toLowerCase(Locale.ROOT).replace('_', ' ');
-        // capitalize first letter
-        if (s.isEmpty()) return name;
-        return s.substring(0,1).toUpperCase(Locale.ROOT) + s.substring(1);
-    }
-
-    // -------------------- INVENTORY HELPERS --------------------
-
-    private boolean hasItems(org.bukkit.inventory.Inventory inv, Material mat, int amount) {
-        int count = 0;
-        for (ItemStack it : inv.getContents()) {
-            if (it != null && it.getType() == mat) count += it.getAmount();
-            if (count >= amount) return true;
-        }
-        return false;
-    }
-
-    private boolean hasItems(Block chestBlock, Material mat, int amount) {
-        BlockState st = chestBlock.getState();
-        if (!(st instanceof org.bukkit.block.Chest chest)) return false;
-        return hasItems(chest.getBlockInventory(), mat, amount);
-    }
-
-    private void removeItems(org.bukkit.inventory.Inventory inv, Material mat, int amount) {
-        int left = amount;
-        for (int i = 0; i < inv.getSize(); i++) {
-            ItemStack it = inv.getItem(i);
-            if (it == null || it.getType() != mat) continue;
-            int take = Math.min(it.getAmount(), left);
-            it.setAmount(it.getAmount() - take);
-            if (it.getAmount() <= 0) inv.setItem(i, null);
-            left -= take;
-            if (left <= 0) return;
-        }
-    }
-
-    private void takeFromChest(Block chestBlock, Material mat, int amount) {
-        BlockState st = chestBlock.getState();
-        if (!(st instanceof org.bukkit.block.Chest chest)) return;
-        removeItems(chest.getBlockInventory(), mat, amount);
-    }
-
-    private Material inferShopItemFromChest(Block chestBlock) {
-        BlockState st = chestBlock.getState();
-        if (!(st instanceof org.bukkit.block.Chest chest)) return null;
-        for (ItemStack it : chest.getBlockInventory().getContents()) {
-            if (it == null) continue;
-            Material m = it.getType();
-            if (m == Material.AIR) continue;
-            if (m == Material.DIAMOND) continue; // currency should not define item
-            return m;
-        }
-        return null;
-    }
-
-    // -------------------- UTILS --------------------
-
-    private Integer parsePositiveInt(String s) {
-        try {
-            int v = Integer.parseInt(s);
-            return v > 0 ? v : null;
-        } catch (Exception ignored) {
-            return null;
-        }
-    }
-
-    private Block getTargetChestBlock(Player p, int maxDist) {
-        Block b = p.getTargetBlockExact(maxDist);
-        if (b == null) return null;
-        if (b.getType() != Material.CHEST) return null;
-        return b;
-    }
-
-    private String prefix() {
-        return cfg("messages.prefix");
-    }
-
-    private String cfg(String path) {
-        FileConfiguration c = getConfig();
-        String v = c.getString(path);
-        return v == null ? "" : v;
-    }
-
-    private String color(String s) {
-        return ChatColor.translateAlternateColorCodes('&', s == null ? "" : s);
-    }
-
-    private void loadItemTranslations() {
-        itemNames.clear();
-        hologramItemNames.clear();
-
-        // item.yml (обычные названия)
-        try {
-            File f = new File(getDataFolder(), "item.yml");
-            if (f.exists()) {
-                var y = YamlConfiguration.loadConfiguration(f);
-                var sec = y.getConfigurationSection("items");
-                if (sec != null) {
-                    for (String k : sec.getKeys(false)) {
-                        try {
-                            org.bukkit.Material m = org.bukkit.Material.valueOf(k.toUpperCase());
-                            String name = sec.getString(k, null);
-                            if (name != null) itemNames.put(m, name);
-                        } catch (IllegalArgumentException ignored) {}
-                    }
+            for (String key : sec.getKeys(false)) {
+                String name = sec.getString(key, null);
+                if (name != null) {
+                    itemNames.put(key.toUpperCase(), name);
                 }
             }
         } catch (Exception ex) {
-            getLogger().warning("Не удалось загрузить item.yml: " + ex.getMessage());
+            getLogger().warning("Не удалось загрузить items.yml: " + ex.getMessage());
         }
+    }
 
-        // hologramitem.yml (для голограмм)
+    private void ensureDefaultHologramItemsYml() {
+        File file = new File(getDataFolder(), "hologramitem.yml");
+        if (file.exists()) {
+            return;
+        }
+        saveResource("hologramitem.yml", false);
+    }
+
+    private void loadHologramItemsYml() {
+        hologramItemNames.clear();
+        File file = new File(getDataFolder(), "hologramitem.yml");
+        if (!file.exists()) {
+            return;
+        }
         try {
-            File f = new File(getDataFolder(), "hologramitem.yml");
-            if (f.exists()) {
-                var y = YamlConfiguration.loadConfiguration(f);
-                var sec = y.getConfigurationSection("items");
-                if (sec != null) {
-                    for (String k : sec.getKeys(false)) {
-                        try {
-                            org.bukkit.Material m = org.bukkit.Material.valueOf(k.toUpperCase());
-                            String name = sec.getString(k, null);
-                            if (name != null) hologramItemNames.put(m, name);
-                        } catch (IllegalArgumentException ignored) {}
+            YamlConfiguration yml = YamlConfiguration.loadConfiguration(file);
+            ConfigurationSection sec = yml.getConfigurationSection("items");
+            if (sec == null) {
+                return;
+            }
+            for (String key : sec.getKeys(false)) {
+                String name = sec.getString(key, null);
+                if (name == null) {
+                    continue;
+                }
+                try {
+                    Material m = Material.matchMaterial(key);
+                    if (m != null) {
+                        hologramItemNames.put(m, name);
                     }
+                } catch (Exception ignored) {
                 }
             }
         } catch (Exception ex) {
@@ -707,12 +616,39 @@ ensureDefaultItemsYml();
         }
     }
 
-    private String trItem(org.bukkit.Material mat) {
-        return itemNames.getOrDefault(mat, prettifyEnum(mat));
+    private String getItemName(ItemStack it) {
+        if (it == null || it.getType() == Material.AIR) {
+            return "";
+        }
+        Material m = it.getType();
+        return itemNames.getOrDefault(m.name(), prettyMaterialName(m));
     }
 
-    private String trHoloItem(org.bukkit.Material mat) {
-        return hologramItemNames.getOrDefault(mat, trItem(mat));
+    private String getHologramItemName(ItemStack it) {
+        if (it == null || it.getType() == Material.AIR) {
+            return "";
+        }
+        Material m = it.getType();
+        String v = hologramItemNames.get(m);
+        if (v != null && !v.isBlank()) {
+            return v;
+        }
+        return getItemName(it);
+    }
+
+    private String prettyMaterialName(Material mat) {
+        String raw = mat.name().toLowerCase();
+        String[] parts = raw.split("_");
+        StringBuilder sb = new StringBuilder();
+        for (String p : parts) {
+            if (p.isEmpty()) continue;
+            sb.append(Character.toUpperCase(p.charAt(0))).append(p.substring(1));
+            sb.append(' ');
+        }
+        return sb.toString().trim();
+    }
+    private String color(String s) {
+        return ChatColor.translateAlternateColorCodes('&', s == null ? "" : s);
     }
 
 }
