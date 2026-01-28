@@ -1,0 +1,39 @@
+messages:
+  prefix: "&a[Магазин] &f"
+  currency: "алм"
+  only-player: "&cЭта команда только для игроков."
+  no-permission: "&cНет прав."
+  reloaded: "&aКонфиг перезагружен."
+  usage-set: "&cИспользование: &f/shop set <цена> <количество> [сообщение...]"
+  invalid-number: "&cЦена и количество должны быть числами больше 0."
+  look-at-chest: "&cПосмотри на сундук (до 6 блоков) и повтори."
+  no-item-in-chest: "&cВ сундуке нет товара (положи предметы для продажи)."
+  cannot-mark-chest: "&cНе удалось пометить сундук как магазин."
+  no-space-for-sign: "&cНет места для таблички перед сундуком."
+  shop-created: "&aМагазин создан!"
+  unknown-subcommand: "&cНеизвестная команда. &7/shop help"
+  cannot-break: "&cНельзя ломать этот магазин."
+  owner-open-sneak: "&eЧтобы открыть сундук магазина, присядь (Shift) и кликни."
+  use-sign: "&eЧтобы купить товар, нажми на табличку."
+  shop-broken: "&cМагазин сломан или табличка не привязана."
+  cannot-buy-self: "&cНельзя покупать у себя."
+  no-stock: "&cВ сундуке нет товара."
+  not-enough-money: "&cНедостаточно средств."
+  bought: "&aВы купили %item% x%amount% за %price% %currency%."
+
+sign:
+  lines:
+    - "&a[Магазин]"
+    - "&f%owner%"
+    - "&c%item%"
+    - "&fЦена: &c%amount%&fшт. &c%price% &f%currency%"
+
+hologram:
+  enabled: true
+  offset-y: 1.3
+  line-step: 0.25
+  default-message: "&bМой магазин!"
+  lines:
+    - "%message%"
+    - "&fМагазин &e%item%&f игрока &a%owner%"
+    - "&7(Чтобы купить товар нажмите на табличку)"

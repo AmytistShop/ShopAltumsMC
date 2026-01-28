@@ -1,0 +1,17 @@
+name: ShopAltumMC
+version: ${project.version}
+main: ru.altum.shopaltummc.ShopAltumMCPlugin
+api-version: '1.21'
+author: Altum
+
+commands:
+  shop:
+    description: Магазин на сундуке + табличка + голограмма
+    usage: /shop set <цена> <количество> [сообщение...]
+    permission: shopaltum.use
+
+permissions:
+  shopaltum.use:
+    default: true
+  shopaltum.admin:
+    default: op
