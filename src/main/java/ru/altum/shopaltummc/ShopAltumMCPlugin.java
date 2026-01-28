@@ -17,6 +17,7 @@ import org.bukkit.block.data.type.WallSign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -538,6 +539,88 @@ ensureDefaultItemsYml();
         }
         ts.getPersistentDataContainer().remove(KEY_HOLOS);
         ts.update(true);
+    }
+
+    // -------------------- HELPERS --------------------
+
+    private String prefix() {
+        return color(getConfig().getString("messages.prefix", "&a[Магазин]&r "));
+    }
+
+    private String cfg(String path) {
+        String s = getConfig().getString(path);
+        if (s == null) return "";
+        return color(s);
+    }
+
+    private Integer parsePositiveInt(String s) {
+        try {
+            int v = Integer.parseInt(s);
+            return v > 0 ? v : null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private Block getTargetChestBlock(Player p, int range) {
+        Block b = p.getTargetBlockExact(range);
+        if (b == null) return null;
+        return (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) ? b : null;
+    }
+
+    private Material inferShopItemFromChest(Block chestBlock) {
+        if (!(chestBlock.getState() instanceof InventoryHolder ih)) return null;
+        for (ItemStack it : ih.getInventory().getContents()) {
+            if (it != null && it.getType() != Material.AIR && it.getAmount() > 0) return it.getType();
+        }
+        return null;
+    }
+
+    private boolean hasItems(Block chestBlock, Material mat, int amount) {
+        if (!(chestBlock.getState() instanceof InventoryHolder ih)) return false;
+        return countItems(ih.getInventory(), mat) >= amount;
+    }
+
+    private boolean hasItems(org.bukkit.inventory.PlayerInventory inv, Material mat, int amount) {
+        return countItems(inv, mat) >= amount;
+    }
+
+    private int countItems(Inventory inv, Material mat) {
+        int c = 0;
+        for (ItemStack it : inv.getContents()) {
+            if (it != null && it.getType() == mat) c += it.getAmount();
+        }
+        return c;
+    }
+
+    private void removeItems(org.bukkit.inventory.PlayerInventory inv, Material mat, int amount) {
+        int left = amount;
+        ItemStack[] cont = inv.getContents();
+        for (int i = 0; i < cont.length && left > 0; i++) {
+            ItemStack it = cont[i];
+            if (it == null || it.getType() != mat) continue;
+            int take = Math.min(left, it.getAmount());
+            it.setAmount(it.getAmount() - take);
+            left -= take;
+            if (it.getAmount() <= 0) cont[i] = null;
+        }
+        inv.setContents(cont);
+    }
+
+    private void takeFromChest(Block chestBlock, Material mat, int amount) {
+        if (!(chestBlock.getState() instanceof InventoryHolder ih)) return;
+        Inventory inv = ih.getInventory();
+        int left = amount;
+        ItemStack[] cont = inv.getContents();
+        for (int i = 0; i < cont.length && left > 0; i++) {
+            ItemStack it = cont[i];
+            if (it == null || it.getType() != mat) continue;
+            int take = Math.min(left, it.getAmount());
+            it.setAmount(it.getAmount() - take);
+            left -= take;
+            if (it.getAmount() <= 0) cont[i] = null;
+        }
+        inv.setContents(cont);
     }
 
     // -------------------- ITEMS / TRANSLATIONS --------------------
