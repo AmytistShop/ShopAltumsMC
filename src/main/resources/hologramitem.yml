@@ -1,469 +1,487 @@
-# Переводы для ГОЛОГРАММ (родительный множественного лучше руками):
-# Автогенерировано из ru_RU.lang (можешь дополнять)
 items:
-  ACTIVATORRAIL: "Активирующие рельсы"
-  ANVIL: "Наковальня"
-  ANVIL_INTACT: "Наковальня"
-  ANVIL_SLIGHTLYDAMAGED: "Повреждённая наковальня"
-  ANVIL_VERYDAMAGED: "Сильно повреждённая наковальня"
-  APPLE: "Яблоко"
-  ARROW: "Стрела"
-  BEACON: "Маяк"
-  BED: "Кровать"
-  BEDROCK: "Коренная порода"
-  BEEFCOOKED: "Приготовленная говядина"
-  BEEFRAW: "Сырая говядина"
-  BLAZEPOWDER: "Огненный порошок"
-  BLAZEROD: "Стержень ифрита"
-  BLOCKCOAL: "Угольный блок"
-  BLOCKDIAMOND: "Алмазный блок"
-  BLOCKEMERALD: "Изумрудный блок"
-  BLOCKGOLD: "Золотой блок"
-  BLOCKIRON: "Железный блок"
-  BLOCKLAPIS: "Блок лазурита"
-  BLOCKREDSTONE: "Блок красного камня"
-  BOAT: "Лодка"
-  BONE: "Кость"
-  BOOK: "Книга"
-  BOOKSHELF: "Книжная полка"
-  BOOTSCLOTH: "Кожаные ботинки"
-  BOW: "Лук"
-  BOWL: "Миска"
-  BREAD: "Хлеб"
-  BREWINGSTAND: "Варочная стойка"
-  BRICK: "Кирпичи"
-  BUCKET: "Ведро"
-  BUTTON: "Кнопка"
-  CACTUS: "Кактус"
-  CAKE: "Торт"
-  CARROTGOLDEN: "Золотая морковь"
-  CARROTONASTICK: "Удочка с морковью"
-  CARROTS: "Морковь"
-  CAULDRON: "Котёл"
-  CHAINMAIL_BOOTS: "Кольчужные ботинки"
-  CHAINMAIL_CHESTPLATE: "Кольчуга"
-  CHAINMAIL_HELMET: "Кольчужный шлем"
-  CHAINMAIL_LEGGINGS: "Кольчужные поножи"
-  CHARCOAL: "Древесный уголь"
-  CHEST: "Сундук"
-  CHESTPLATECLOTH: "Кожаная куртка"
-  CHESTTRAP: "Сундук-ловушка"
-  CHICKENCOOKED: "Жареная курица"
-  CHICKENRAW: "Сырая курятина"
-  CLAY: "Глина"
-  CLAYHARDENED: "Обожжёная глина"
-  CLAYHARDENEDSTAINED_BLACK: "Чёрная обожжённая глина"
-  CLAYHARDENEDSTAINED_BLUE: "Синяя обожжённая глина"
-  CLAYHARDENEDSTAINED_BROWN: "Коричневая обожжённая глина"
-  CLAYHARDENEDSTAINED_CYAN: "Бирюзовая обожжённая глина"
-  CLAYHARDENEDSTAINED_GRAY: "Серая обожжённая глина"
-  CLAYHARDENEDSTAINED_GREEN: "Зелёная обожжённая глина"
-  CLAYHARDENEDSTAINED_LIGHTBLUE: "Светло-синяя обожжённая глина"
-  CLAYHARDENEDSTAINED_LIME: "Лаймовая обожжённая глина"
-  CLAYHARDENEDSTAINED_MAGENTA: "Сиреневая обожжённая глина"
-  CLAYHARDENEDSTAINED_ORANGE: "Оранжевая обожжённая глина"
-  CLAYHARDENEDSTAINED_PINK: "Розовая обожжённая глина"
-  CLAYHARDENEDSTAINED_PURPLE: "Фиолетовая обожжённая глина"
-  CLAYHARDENEDSTAINED_RED: "Красная обожжённая глина"
-  CLAYHARDENEDSTAINED_SILVER: "Светло-серая обожжённая глина"
-  CLAYHARDENEDSTAINED_WHITE: "Белая обожжённая глина"
-  CLAYHARDENEDSTAINED_YELLOW: "Жёлтая обожжённая глина"
-  CLOCK: "Часы"
-  CLOTH: "Шерсть"
-  CLOTH_BLACK: "Чёрная шерсть"
-  CLOTH_BLUE: "Синяя шерсть"
-  CLOTH_BROWN: "Коричневая шерсть"
-  CLOTH_CYAN: "Бирюзовая шерсть"
-  CLOTH_GRAY: "Серая шерсть"
-  CLOTH_GREEN: "Зелёная шерсть"
-  CLOTH_LIGHTBLUE: "Светло-синяя шерсть"
-  CLOTH_LIME: "Лаймовая шерсть"
-  CLOTH_MAGENTA: "Сиреневая шерсть"
-  CLOTH_ORANGE: "Оранжевая шерсть"
-  CLOTH_PINK: "Розовая шерсть"
-  CLOTH_PURPLE: "Фиолетовая шерсть"
-  CLOTH_RED: "Красная шерсть"
-  CLOTH_SILVER: "Светло-серая шерсть"
-  CLOTH_WHITE: "Шерсть"
-  CLOTH_YELLOW: "Жёлтая шерсть"
-  COAL: "Уголь"
-  COBBLEWALL_MOSSY: "Замшелая каменная стена"
-  COBBLEWALL_NORMAL: "Каменная стена"
-  COCOA: "Какао"
-  COMMANDBLOCK: "Командный блок"
-  COMPARATOR: "Красный компаратор"
-  COMPASS: "Компас"
-  COOKIE: "Печенье"
-  CRAFTING_TABLE: "Верстак"
-  CROPS: "Всходы"
-  DAYLIGHTDETECTOR: "Датчик дневного света"
-  DEADBUSH: "Мёртвый куст"
-  DETECTORRAIL: "Нажимные рельсы"
-  DIAMOND: "Алмаз"
-  DIAMOND_BOOTS: "Алмазные ботинки"
-  DIAMOND_CHESTPLATE: "Алмазная кираса"
-  DIAMOND_HELMET: "Алмазный шлем"
-  DIAMOND_HOE: "Алмазная мотыга"
-  DIAMOND_LEGGINGS: "Алмазные поножи"
-  DIAMOND_PICKAXE: "Алмазная кирка"
-  DIAMOND_SHOVEL: "Алмазная лопата"
-  DIAMOND_SWORD: "Алмазный меч"
-  DIODE: "Красный повторитель"
-  DIRT_DEFAULT: "Земля"
-  DIRT_PODZOL: "Подзол"
-  DISPENSER: "Раздатчик"
-  DOORIRON: "Железная дверь"
-  DOORWOOD: "Деревянная дверь"
-  DOUBLEPLANT_FERN: "Раскидистый папоротник"
-  DOUBLEPLANT_GRASS: "Двойная высокая трава"
-  DOUBLEPLANT_PAEONIA: "Пион"
-  DOUBLEPLANT_ROSE: "Куст роз"
-  DOUBLEPLANT_SUNFLOWER: "Подсолнечник"
-  DOUBLEPLANT_SYRINGA: "Сирень"
-  DRAGONEGG: "Яйцо дракона"
-  DROPPER: "Выбрасыватель"
-  DYEPOWDER_BLACK: "Чернильный мешок"
-  DYEPOWDER_BLUE: "Ультрамарин"
-  DYEPOWDER_BROWN: "Какао-бобы"
-  DYEPOWDER_CYAN: "Бирюзовый краситель"
-  DYEPOWDER_GRAY: "Серый краситель"
-  DYEPOWDER_GREEN: "Кактусовая зелень"
-  DYEPOWDER_LIGHTBLUE: "Светло-синий краситель"
-  DYEPOWDER_LIME: "Лаймовый краситель"
-  DYEPOWDER_MAGENTA: "Сиреневый краситель"
-  DYEPOWDER_ORANGE: "Оранжевый краситель"
-  DYEPOWDER_PINK: "Розовый краситель"
-  DYEPOWDER_PURPLE: "Фиолетовый краситель"
-  DYEPOWDER_RED: "Красный краситель(Роза)"
-  DYEPOWDER_SILVER: "Светло-серый краситель"
-  DYEPOWDER_WHITE: "Костная мука"
-  DYEPOWDER_YELLOW: "Жёлтый краситель(Одуванчик)"
-  EGG: "Яйцо"
-  EMERALD: "Изумруд"
-  EMPTYMAP: "Пустая карта"
-  EMPTYPOTION: "Пузырёк воды"
-  ENCHANTEDBOOK: "Зачарованная книга"
-  ENCHANTMENTTABLE: "Стол зачаровывания"
-  ENDERCHEST: "Сундук Края"
-  ENDERPEARL: "Жемчуг Края"
-  ENDPORTALFRAME: "Портал в Край"
-  EXPBOTTLE: "Зелье опыта"
-  EYEOFENDER: "Око Края"
-  FARMLAND: "Пашня"
-  FEATHER: "Перо"
-  FENCE: "Забор"
-  FENCEGATE: "Калитка"
-  FENCEIRON: "Железные прутья"
-  FERMENTEDSPIDEREYE: "Маринованный паучий глаз"
-  FIRE: "Огонь"
-  FIREBALL: "Огненный шар"
-  FIREWORKS: "Фейерверк"
-  FIREWORKSCHARGE: "Звёздочка фейерверка"
-  FISHINGROD: "Удочка"
-  FISH_CLOWNFISH_RAW: "Рыба-клоун"
-  FISH_COD_COOKED: "Приготовленная рыба"
-  FISH_COD_RAW: "Сырая рыба"
-  FISH_PUFFERFISH_RAW: "Иглобрюх"
-  FISH_SALMON_COOKED: "Приготовленный лосось"
-  FISH_SALMON_RAW: "Сырой лосось"
-  FLINT: "Кремень"
-  FLINTANDSTEEL: "Огниво"
-  FLOWER1_DANDELION: "Одуванчик"
-  FLOWER2_ALLIUM: "Лук"
-  FLOWER2_BLUEORCHID: "Голубая орхидея"
-  FLOWER2_HOUSTONIA: "Голубой василёк"
-  FLOWER2_OXEYEDAISY: "Ромашка"
-  FLOWER2_POPPY: "Мак"
-  FLOWER2_TULIPORANGE: "Оранжевый тюльпан"
-  FLOWER2_TULIPPINK: "Розовый тюльпан"
-  FLOWER2_TULIPRED: "Красный тюльпан"
-  FLOWER2_TULIPWHITE: "Белый тюльпан"
-  FLOWERPOT: "Цветочный горшок"
-  FRAME: "Предметная рамка"
-  FURNACE: "Печь"
-  GHASTTEAR: "Слеза гаста"
-  GLASS: "Стекло"
-  GLASSBOTTLE: "Колба"
-  GOLDENRAIL: "Электрические рельсы"
-  GOLDEN_APPLE: "Золотое яблоко"
-  GOLDEN_BOOTS: "Золотые ботинки"
-  GOLDEN_CHESTPLATE: "Золотая кираса"
-  GOLDEN_HELMET: "Золотой шлем"
-  GOLDEN_HOE: "Золотая мотыга"
-  GOLDEN_LEGGINGS: "Золотые поножи"
-  GOLDEN_PICKAXE: "Золотая кирка"
-  GOLDEN_SHOVEL: "Золотая лопата"
-  GOLDEN_SWORD: "Золотой меч"
-  GOLDNUGGET: "Золотой самородок"
-  GOLD_INGOT: "Золотой слиток"
-  GRASS_BLOCK: "Блок травы"
-  GRAVEL: "Гравий"
-  HATCHETDIAMOND: "Алмазный топор"
-  HATCHETGOLD: "Золотой топор"
-  HATCHETIRON: "Железный топор"
-  HATCHETSTONE: "Каменный топор"
-  HATCHETWOOD: "Деревянный топор"
-  HAYBLOCK: "Сноп сена"
-  HELLROCK: "Камень Нижнего мира"
-  HELLSAND: "Песок душ"
-  HELMETCLOTH: "Кожаная шапка"
-  HOPPER: "Воронка"
-  HORSEARMORDIAMOND: "Алмазная конская броня"
-  HORSEARMORGOLD: "Золотая конская броня"
-  HORSEARMORMETAL: "Железная конская броня"
-  ICE: "Лёд"
-  ICEPACKED: "Плотный лёд"
-  IRON_BOOTS: "Железные ботинки"
-  IRON_CHESTPLATE: "Железная кираса"
-  IRON_HELMET: "Железный шлем"
-  IRON_HOE: "Железная мотыга"
-  IRON_INGOT: "Железный слиток"
-  IRON_LEGGINGS: "Железные поножи"
-  IRON_PICKAXE: "Железная кирка"
-  IRON_SHOVEL: "Железная лопата"
-  IRON_SWORD: "Железный меч"
-  JUKEBOX: "Проигрыватель"
-  LADDER: "Лестница"
-  LAVA: "Лава"
-  LAVA_BUCKET: "Ведро лавы"
-  LEASH: "Поводок"
-  LEATHER: "Кожа"
-  LEAVES: "Листва"
-  LEAVES_ACACIA: "Листва акации"
-  LEAVES_BIG_OAK: "Листва тёмного дуба"
-  LEAVES_BIRCH: "Листва берёзы"
-  LEAVES_JUNGLE: "Листва тропического дерева"
-  LEAVES_OAK: "Листва дуба"
-  LEAVES_SPRUCE: "Листва ели"
-  LEGGINGSCLOTH: "Кожаные штаны"
-  LEVER: "Рычаг"
-  LIGHTGEM: "Светящийся камень"
-  LITPUMPKIN: "Светильник Джека"
-  LOCKEDCHEST: "Запертый сундук"
-  LOG_ACACIA: "Древесина акации"
-  LOG_BIG_OAK: "Древесина тёмного дуба"
-  LOG_BIRCH: "Древесина берёзы"
-  LOG_JUNGLE: "Древесина тропического дерева"
-  LOG_OAK: "Древесина дуба"
-  LOG_SPRUCE: "Древесина ели"
-  MAGMACREAM: "Магмовый крем"
-  MAP: "Карта"
-  MELON: "Арбуз"
-  MILK: "Молоко"
-  MINECART: "Вагонетка"
-  MINECARTCHEST: "Вагонетка с сундуком"
-  MINECARTCOMMANDBLOCK: "Вагонетка с командным блоком"
-  MINECARTFURNACE: "Вагонетка с печью"
-  MINECARTHOPPER: "Вагонетка с загрузочной воронкой"
-  MINECARTTNT: "Вагонетка с динамитом"
-  MOBSPAWNER: "Спаунер монстров"
-  MONSTERPLACER: "Призвать существо -"
-  MONSTERSTONEEGG_BRICK: "Каменный кирпич с монстрами"
-  MONSTERSTONEEGG_CHISELEDBRICK: "Резной каменный кирпич с монстрами"
-  MONSTERSTONEEGG_COBBLE: "Булыжник с монстрами"
-  MONSTERSTONEEGG_CRACKEDBRICK: "Потрескавшийся каменный кирпич с монстрами"
-  MONSTERSTONEEGG_MOSSYBRICK: "Замшелый каменный кирпич с монстрами"
-  MONSTERSTONEEGG_STONE: "Камень с монстрами"
-  MUSHROOM: "Гриб"
-  MUSHROOMSTEW: "Тушёные грибы"
-  MUSICBLOCK: "Нотный блок"
-  MYCEL: "Мицелий"
-  NAMETAG: "Бирка"
-  NETHERBRICK: "Кирпич Нижнего мира"
-  NETHERFENCE: "Забор Нижнего мира"
-  NETHERQUARTZ: "Кварцевая руда Нижнего мира"
-  NETHERSTALK: "Нарост Нижнего мира"
-  NETHERSTALKSEEDS: "Нарост Нижнего мира"
-  NETHERSTAR: "Звезда Нижнего мира"
-  NOTGATE: "Красный факел"
-  OAK_LOG: "Древесина"
-  OBSIDIAN: "Обсидиан"
-  ORECOAL: "Уголь"
-  OREDIAMOND: "Алмазная руда"
-  OREEMERALD: "Изумрудная руда"
-  OREGOLD: "Золотая руда"
-  OREIRON: "Железная руда"
-  ORELAPIS: "Лазуритовая руда"
-  OREREDSTONE: "Красная руда"
-  ORERUBY: "Рубиновая руда"
-  PAINTING: "Картина"
-  PAPER: "Бумага"
-  PISTONBASE: "Поршень"
-  PISTONSTICKYBASE: "Липкий поршень"
-  PORKCHOPCOOKED: "Приготовленная свинина"
-  PORKCHOPRAW: "Сырая свинина"
-  PORTAL: "Портал"
-  POTATO: "Картофель"
-  POTATOBAKED: "Печёный картофель"
-  POTATOES: "Картофель"
-  POTATOPOISONOUS: "Ядовитый картофель"
-  POTION: "Зелье"
-  PRESSUREPLATE: "Нажимная пластина"
-  PUMPKIN: "Тыква"
-  PUMPKINPIE: "Тыквенный пирог"
-  QUARTZBLOCK_CHISELED: "Резной кварцевый блок"
-  QUARTZBLOCK_DEFAULT: "Кварцевый блок"
-  QUARTZBLOCK_LINES: "Блок кварцевый колонны"
-  RAIL: "Рельсы"
-  RECORD: "Музыкальная пластинка"
-  REDSTONE: "Красная пыль"
-  REDSTONEDUST: "Красная пыль"
-  REDSTONELIGHT: "Лампа"
-  REEDS: "Сахарный тростник"
-  ROTTENFLESH: "Гнилая плоть"
-  RUBY: "Рубин"
-  SADDLE: "Седло"
-  SANDSTONE: "Песчаник"
-  SANDSTONE_CHISELED: "Резной песчаник"
-  SANDSTONE_DEFAULT: "Песчаник"
-  SANDSTONE_SMOOTH: "Гладкий песчаник"
-  SAND_DEFAULT: "Песок"
-  SAND_RED: "Красный песок"
-  SAPLING_ACACIA: "Саженец акации"
-  SAPLING_BIRCH: "Саженец берёзы"
-  SAPLING_JUNGLE: "Саженец тропического дерева"
-  SAPLING_OAK: "Саженец дуба"
-  SAPLING_ROOFED_OAK: "Саженец тёмного дуба"
-  SAPLING_SPRUCE: "Саженец ели"
-  SEEDS: "Семена пшеницы"
-  SEEDS_MELON: "Семена арбуза"
-  SEEDS_PUMPKIN: "Семена тыквы"
-  SHEARS: "Ножницы"
-  SIGN: "Табличка"
-  SKULL_CHAR: "Голова"
-  SKULL_CREEPER: "Голова крипера"
-  SKULL_PLAYER: "Голова %s"
-  SKULL_SKELETON: "Череп скелета"
-  SKULL_WITHER: "Череп Скелета-Иссушителя"
-  SKULL_ZOMBIE: "Голова зомби"
-  SLIMEBALL: "Шарик слизи"
-  SNOW: "Снег"
-  SNOWBALL: "Снежок"
-  SPECKLEDMELON: "Сверкающий арбуз"
-  SPIDEREYE: "Паучий глаз"
-  SPONGE: "Губка"
-  STAINEDGLASS: "Окрашенное стекло"
-  STAINEDGLASS_BLACK: "Чёрное стекло"
-  STAINEDGLASS_BLUE: "Синее стекло"
-  STAINEDGLASS_BROWN: "Коричневое стекло"
-  STAINEDGLASS_CYAN: "Бирюзовое стекло"
-  STAINEDGLASS_GRAY: "Серое стекло"
-  STAINEDGLASS_GREEN: "Зелёное стекло"
-  STAINEDGLASS_LIGHTBLUE: "Светло-синее стекло"
-  STAINEDGLASS_LIME: "Лаймовое стекло"
-  STAINEDGLASS_MAGENTA: "Сиреневое стекло"
-  STAINEDGLASS_ORANGE: "Оранжевое стекло"
-  STAINEDGLASS_PINK: "Розовое стекло"
-  STAINEDGLASS_PURPLE: "Фиолетовое стекло"
-  STAINEDGLASS_RED: "Красное стекло"
-  STAINEDGLASS_SILVER: "Светло-серое стекло"
-  STAINEDGLASS_WHITE: "Белое стекло"
-  STAINEDGLASS_YELLOW: "Жёлтое стекло"
-  STAIRSBRICK: "Кирпичные ступеньки"
-  STAIRSNETHERBRICK: "Ступеньки из кирпича Нижнего мира"
-  STAIRSQUARTZ: "Кварцевые ступеньки"
-  STAIRSSANDSTONE: "Песчаниковые ступеньки"
-  STAIRSSTONE: "Каменные ступеньки"
-  STAIRSSTONEBRICKSMOOTH: "Ступеньки из каменного кирпича"
-  STAIRSWOOD: "Ступеньки из дуба"
-  STAIRSWOODACACIA: "Ступеньки из акации"
-  STAIRSWOODBIRCH: "Ступеньки из берёзы"
-  STAIRSWOODDARKOAK: "Ступеньки из тёмного дуба"
-  STAIRSWOODJUNGLE: "Ступеньки из тропического дерева"
-  STAIRSWOODSPRUCE: "Ступеньки из ели"
-  STICK: "Палка"
-  STONE: "Камень"
-  STONEBRICKSMOOTH: "Каменный кирпич"
-  STONEBRICKSMOOTH_CHISELED: "Резной каменный кирпич"
-  STONEBRICKSMOOTH_CRACKED: "Потрескавшийся каменный кирпич"
-  STONEBRICKSMOOTH_DEFAULT: "Каменный кирпич"
-  STONEBRICKSMOOTH_MOSSY: "Замшелый каменный кирпич"
-  STONEMOSS: "Замшелый булыжник"
-  STONESLAB_BRICK: "Кирпичная плита"
-  STONESLAB_COBBLE: "Булыжниковая плита"
-  STONESLAB_NETHERBRICK: "Плита из кирпича Нижнего мира"
-  STONESLAB_QUARTZ: "Кварцевая плита"
-  STONESLAB_SAND: "Песчаниковая плита"
-  STONESLAB_SMOOTHSTONEBRICK: "Плита из каменного кирпича"
-  STONESLAB_STONE: "Каменная плита"
-  STONESLAB_WOOD: "Деревянная плита"
-  STONE_BRICKS: "Булыжник"
-  STONE_HOE: "Каменная мотыга"
-  STONE_PICKAXE: "Каменная кирка"
-  STONE_SHOVEL: "Каменная лопата"
-  STONE_SWORD: "Каменный меч"
-  STRING: "Нить"
-  SUGAR: "Сахар"
-  SULPHUR: "Порох"
-  TALLGRASS: "Трава"
-  TALLGRASS_FERN: "Папоротник"
-  TALLGRASS_GRASS: "Высокая трава"
-  TALLGRASS_SHRUB: "Куст"
-  THINGLASS: "Стеклянная панель"
-  THINSTAINEDGLASS: "Окрашенная стеклянная панель"
-  THINSTAINEDGLASS_BLACK: "Чёрная стеклянная панель"
-  THINSTAINEDGLASS_BLUE: "Синяя стеклянная панель"
-  THINSTAINEDGLASS_BROWN: "Коричневая стеклянная панель"
-  THINSTAINEDGLASS_CYAN: "Бирюзовая стеклянная панель"
-  THINSTAINEDGLASS_GRAY: "Серая стеклянная панель"
-  THINSTAINEDGLASS_GREEN: "Зелёная стеклянная панель"
-  THINSTAINEDGLASS_LIGHTBLUE: "Светло-синяя стеклянная панель"
-  THINSTAINEDGLASS_LIME: "Лаймовая стеклянная панель"
-  THINSTAINEDGLASS_MAGENTA: "Сиреневая стеклянная панель"
-  THINSTAINEDGLASS_ORANGE: "Оранжевая стеклянная панель"
-  THINSTAINEDGLASS_PINK: "Розовая стеклянная панель"
-  THINSTAINEDGLASS_PURPLE: "Фиолетовая стеклянная панель"
-  THINSTAINEDGLASS_RED: "Красная стеклянная панель"
-  THINSTAINEDGLASS_SILVER: "Светло-серая стеклянная панель"
-  THINSTAINEDGLASS_WHITE: "Белая стеклянная панель"
-  THINSTAINEDGLASS_YELLOW: "Жёлтая стеклянная панель"
-  TNT: "Динамит"
-  TORCH: "Факел"
-  TRAPDOOR: "Люк"
-  TRIPWIRE: "Растяжка"
-  TRIPWIRESOURCE: "Натяжной датчик"
-  VINE: "Лоза"
-  WATER: "Вода"
-  WATERLILY: "Кувшинка"
-  WATER_BUCKET: "Ведро воды"
-  WEB: "Паутина"
-  WEIGHTEDPLATE_HEAVY: "Утяжелённая нажимная пластина (Тяжёлая)"
-  WEIGHTEDPLATE_LIGHT: "Утяжелённая нажимная пластина (Лёгкая)"
-  WHEAT: "Пшеница"
-  WHITESTONE: "Камень Края"
-  WOOD: "Деревянные доски"
-  WOODEN_HOE: "Деревянная мотыга"
-  WOODEN_PICKAXE: "Деревянная кирка"
-  WOODEN_SHOVEL: "Деревянная лопата"
-  WOODEN_SWORD: "Деревянный меч"
-  WOODSLAB_ACACIA: "Плита из акации"
-  WOODSLAB_BIG_OAK: "Плита из тёмного дуба"
-  WOODSLAB_BIRCH: "Плита из берёзы"
-  WOODSLAB_JUNGLE: "Плита из тропического дерева"
-  WOODSLAB_OAK: "Плита из дуба"
-  WOODSLAB_SPRUCE: "Плита из ели"
-  WOOD_ACACIA: "Доски из акации"
-  WOOD_BIG_OAK: "Доски из тёмного дуба"
-  WOOD_BIRCH: "Доски из берёзы"
-  WOOD_JUNGLE: "Доски из тропического дерева"
-  WOOD_OAK: "Доски из дуба"
-  WOOD_SPRUCE: "Доски из ели"
-  WOOLCARPET_BLACK: "Чёрный ковёр"
-  WOOLCARPET_BLUE: "Синий ковёр"
-  WOOLCARPET_BROWN: "Коричневый ковёр"
-  WOOLCARPET_CYAN: "Бирюзовый ковёр"
-  WOOLCARPET_GRAY: "Серый ковёр"
-  WOOLCARPET_GREEN: "Зелёный ковёр"
-  WOOLCARPET_LIGHTBLUE: "Светло-синий ковёр"
-  WOOLCARPET_LIME: "Лаймовый ковёр"
-  WOOLCARPET_MAGENTA: "Сиреневый ковёр"
-  WOOLCARPET_ORANGE: "Оранжевый ковёр"
-  WOOLCARPET_PINK: "Розовый ковёр"
-  WOOLCARPET_PURPLE: "Фиолетовый ковёр"
-  WOOLCARPET_RED: "Красный ковёр"
-  WOOLCARPET_SILVER: "Светло-серый ковёр"
-  WOOLCARPET_WHITE: "Ковёр"
-  WOOLCARPET_YELLOW: "Жёлтый ковёр"
-  WRITINGBOOK: "Книга и перо"
-  WRITTENBOOK: "Написанная книга"
-  YELLOWDUST: "Светящаяся пыль"
+  ACTIVATORRAIL: Активирующие рельсы
+  ANVIL: Наковальня
+  ANVIL_INTACT: Наковальня
+  ANVIL_SLIGHTLYDAMAGED: Повреждённая наковальня
+  ANVIL_VERYDAMAGED: Сильно повреждённая наковальня
+  APPLE: Яблоко
+  ARROW: стрел
+  BEACON: Маяк
+  BED: Кровать
+  BEDROCK: Коренная порода
+  BEEFCOOKED: Приготовленная говядина
+  BEEFRAW: Сырая говядина
+  BLAZEPOWDER: Огненный порошок
+  BLAZEROD: Стержень ифрита
+  BLOCKCOAL: Угольный блок
+  BLOCKDIAMOND: Алмазный блок
+  BLOCKEMERALD: Изумрудный блок
+  BLOCKGOLD: Золотой блок
+  BLOCKIRON: Железный блок
+  BLOCKLAPIS: Блок лазурита
+  BLOCKREDSTONE: Блок красного камня
+  BOAT: Лодка
+  BONE: Кость
+  BOOK: Книга
+  BOOKSHELF: Книжная полка
+  BOOTSCLOTH: Кожаные ботинки
+  BOW: луков
+  BOWL: Миска
+  BREAD: Хлеб
+  BREWINGSTAND: Варочная стойка
+  BRICK: Кирпичи
+  BUCKET: Ведро
+  BUTTON: Кнопка
+  CACTUS: Кактус
+  CAKE: Торт
+  CARROTGOLDEN: Золотая морковь
+  CARROTONASTICK: Удочка с морковью
+  CARROTS: Морковь
+  CAULDRON: Котёл
+  CHAINMAIL_BOOTS: Кольчужные ботинки
+  CHAINMAIL_CHESTPLATE: Кольчуга
+  CHAINMAIL_HELMET: Кольчужный шлем
+  CHAINMAIL_LEGGINGS: Кольчужные поножи
+  CHARCOAL: Древесный уголь
+  CHEST: Сундук
+  CHESTPLATECLOTH: Кожаная куртка
+  CHESTTRAP: Сундук-ловушка
+  CHICKENCOOKED: Жареная курица
+  CHICKENRAW: Сырая курятина
+  CLAY: Глина
+  CLAYHARDENED: Обожжёная глина
+  CLAYHARDENEDSTAINED_BLACK: Чёрная обожжённая глина
+  CLAYHARDENEDSTAINED_BLUE: Синяя обожжённая глина
+  CLAYHARDENEDSTAINED_BROWN: Коричневая обожжённая глина
+  CLAYHARDENEDSTAINED_CYAN: Бирюзовая обожжённая глина
+  CLAYHARDENEDSTAINED_GRAY: Серая обожжённая глина
+  CLAYHARDENEDSTAINED_GREEN: Зелёная обожжённая глина
+  CLAYHARDENEDSTAINED_LIGHTBLUE: Светло-синяя обожжённая глина
+  CLAYHARDENEDSTAINED_LIME: Лаймовая обожжённая глина
+  CLAYHARDENEDSTAINED_MAGENTA: Сиреневая обожжённая глина
+  CLAYHARDENEDSTAINED_ORANGE: Оранжевая обожжённая глина
+  CLAYHARDENEDSTAINED_PINK: Розовая обожжённая глина
+  CLAYHARDENEDSTAINED_PURPLE: Фиолетовая обожжённая глина
+  CLAYHARDENEDSTAINED_RED: Красная обожжённая глина
+  CLAYHARDENEDSTAINED_SILVER: Светло-серая обожжённая глина
+  CLAYHARDENEDSTAINED_WHITE: Белая обожжённая глина
+  CLAYHARDENEDSTAINED_YELLOW: Жёлтая обожжённая глина
+  CLOCK: Часы
+  CLOTH: Шерсть
+  CLOTH_BLACK: Чёрная шерсть
+  CLOTH_BLUE: Синяя шерсть
+  CLOTH_BROWN: Коричневая шерсть
+  CLOTH_CYAN: Бирюзовая шерсть
+  CLOTH_GRAY: Серая шерсть
+  CLOTH_GREEN: Зелёная шерсть
+  CLOTH_LIGHTBLUE: Светло-синяя шерсть
+  CLOTH_LIME: Лаймовая шерсть
+  CLOTH_MAGENTA: Сиреневая шерсть
+  CLOTH_ORANGE: Оранжевая шерсть
+  CLOTH_PINK: Розовая шерсть
+  CLOTH_PURPLE: Фиолетовая шерсть
+  CLOTH_RED: Красная шерсть
+  CLOTH_SILVER: Светло-серая шерсть
+  CLOTH_WHITE: Шерсть
+  CLOTH_YELLOW: Жёлтая шерсть
+  COAL: Уголь
+  COBBLEWALL_MOSSY: Замшелая каменная стена
+  COBBLEWALL_NORMAL: Каменная стена
+  COCOA: Какао
+  COMMANDBLOCK: Командный блок
+  COMPARATOR: Красный компаратор
+  COMPASS: Компас
+  COOKIE: Печенье
+  CRAFTING_TABLE: Верстак
+  CROPS: Всходы
+  CROSSBOW: арбалетов
+  DAYLIGHTDETECTOR: Датчик дневного света
+  DEADBUSH: Мёртвый куст
+  DETECTORRAIL: Нажимные рельсы
+  DIAMOND: алмазов
+  DIAMOND_AXE: алмазных топоров
+  DIAMOND_BOOTS: алмазных ботинок
+  DIAMOND_CHESTPLATE: алмазных нагрудников
+  DIAMOND_HELMET: алмазных шлемов
+  DIAMOND_HOE: алмазных мотыг
+  DIAMOND_LEGGINGS: алмазных поножей
+  DIAMOND_PICKAXE: алмазных кирок
+  DIAMOND_SHOVEL: алмазных лопат
+  DIAMOND_SWORD: алмазных мечей
+  DIODE: Красный повторитель
+  DIRT_DEFAULT: Земля
+  DIRT_PODZOL: Подзол
+  DISPENSER: Раздатчик
+  DOORIRON: Железная дверь
+  DOORWOOD: Деревянная дверь
+  DOUBLEPLANT_FERN: Раскидистый папоротник
+  DOUBLEPLANT_GRASS: Двойная высокая трава
+  DOUBLEPLANT_PAEONIA: Пион
+  DOUBLEPLANT_ROSE: Куст роз
+  DOUBLEPLANT_SUNFLOWER: Подсолнечник
+  DOUBLEPLANT_SYRINGA: Сирень
+  DRAGONEGG: Яйцо дракона
+  DROPPER: Выбрасыватель
+  DYEPOWDER_BLACK: Чернильный мешок
+  DYEPOWDER_BLUE: Ультрамарин
+  DYEPOWDER_BROWN: Какао-бобы
+  DYEPOWDER_CYAN: Бирюзовый краситель
+  DYEPOWDER_GRAY: Серый краситель
+  DYEPOWDER_GREEN: Кактусовая зелень
+  DYEPOWDER_LIGHTBLUE: Светло-синий краситель
+  DYEPOWDER_LIME: Лаймовый краситель
+  DYEPOWDER_MAGENTA: Сиреневый краситель
+  DYEPOWDER_ORANGE: Оранжевый краситель
+  DYEPOWDER_PINK: Розовый краситель
+  DYEPOWDER_PURPLE: Фиолетовый краситель
+  DYEPOWDER_RED: Красный краситель(Роза)
+  DYEPOWDER_SILVER: Светло-серый краситель
+  DYEPOWDER_WHITE: Костная мука
+  DYEPOWDER_YELLOW: Жёлтый краситель(Одуванчик)
+  EGG: Яйцо
+  EMERALD: изумрудов
+  EMPTYMAP: Пустая карта
+  EMPTYPOTION: Пузырёк воды
+  ENCHANTEDBOOK: Зачарованная книга
+  ENCHANTMENTTABLE: Стол зачаровывания
+  ENDERCHEST: Сундук Края
+  ENDERPEARL: Жемчуг Края
+  ENDER_PEARL: эндер-жемчугов
+  ENDPORTALFRAME: Портал в Край
+  EXPBOTTLE: Зелье опыта
+  EYEOFENDER: Око Края
+  FARMLAND: Пашня
+  FEATHER: Перо
+  FENCE: Забор
+  FENCEGATE: Калитка
+  FENCEIRON: Железные прутья
+  FERMENTEDSPIDEREYE: Маринованный паучий глаз
+  FIRE: Огонь
+  FIREBALL: Огненный шар
+  FIREWORKS: Фейерверк
+  FIREWORKSCHARGE: Звёздочка фейерверка
+  FISHINGROD: Удочка
+  FISH_CLOWNFISH_RAW: Рыба-клоун
+  FISH_COD_COOKED: Приготовленная рыба
+  FISH_COD_RAW: Сырая рыба
+  FISH_PUFFERFISH_RAW: Иглобрюх
+  FISH_SALMON_COOKED: Приготовленный лосось
+  FISH_SALMON_RAW: Сырой лосось
+  FLINT: Кремень
+  FLINTANDSTEEL: Огниво
+  FLOWER1_DANDELION: Одуванчик
+  FLOWER2_ALLIUM: Лук
+  FLOWER2_BLUEORCHID: Голубая орхидея
+  FLOWER2_HOUSTONIA: Голубой василёк
+  FLOWER2_OXEYEDAISY: Ромашка
+  FLOWER2_POPPY: Мак
+  FLOWER2_TULIPORANGE: Оранжевый тюльпан
+  FLOWER2_TULIPPINK: Розовый тюльпан
+  FLOWER2_TULIPRED: Красный тюльпан
+  FLOWER2_TULIPWHITE: Белый тюльпан
+  FLOWERPOT: Цветочный горшок
+  FRAME: Предметная рамка
+  FURNACE: Печь
+  GHASTTEAR: Слеза гаста
+  GLASS: Стекло
+  GLASSBOTTLE: Колба
+  GOLDENRAIL: Электрические рельсы
+  GOLDEN_APPLE: Золотое яблоко
+  GOLDEN_AXE: золотых топоров
+  GOLDEN_BOOTS: Золотые ботинки
+  GOLDEN_CHESTPLATE: Золотая кираса
+  GOLDEN_HELMET: Золотой шлем
+  GOLDEN_HOE: золотых мотыг
+  GOLDEN_LEGGINGS: Золотые поножи
+  GOLDEN_PICKAXE: золотых кирок
+  GOLDEN_SHOVEL: золотых лопат
+  GOLDEN_SWORD: золотых мечей
+  GOLDNUGGET: Золотой самородок
+  GOLD_INGOT: золотых слитков
+  GRASS_BLOCK: Блок травы
+  GRAVEL: Гравий
+  HATCHETDIAMOND: Алмазный топор
+  HATCHETGOLD: Золотой топор
+  HATCHETIRON: Железный топор
+  HATCHETSTONE: Каменный топор
+  HATCHETWOOD: Деревянный топор
+  HAYBLOCK: Сноп сена
+  HELLROCK: Камень Нижнего мира
+  HELLSAND: Песок душ
+  HELMETCLOTH: Кожаная шапка
+  HOPPER: Воронка
+  HORSEARMORDIAMOND: Алмазная конская броня
+  HORSEARMORGOLD: Золотая конская броня
+  HORSEARMORMETAL: Железная конская броня
+  ICE: Лёд
+  ICEPACKED: Плотный лёд
+  IRON_AXE: железных топоров
+  IRON_BOOTS: Железные ботинки
+  IRON_CHESTPLATE: Железная кираса
+  IRON_HELMET: Железный шлем
+  IRON_HOE: железных мотыг
+  IRON_INGOT: железных слитков
+  IRON_LEGGINGS: Железные поножи
+  IRON_PICKAXE: железных кирок
+  IRON_SHOVEL: железных лопат
+  IRON_SWORD: железных мечей
+  JUKEBOX: Проигрыватель
+  LADDER: Лестница
+  LAVA: Лава
+  LAVA_BUCKET: Ведро лавы
+  LEASH: Поводок
+  LEATHER: Кожа
+  LEAVES: Листва
+  LEAVES_ACACIA: Листва акации
+  LEAVES_BIG_OAK: Листва тёмного дуба
+  LEAVES_BIRCH: Листва берёзы
+  LEAVES_JUNGLE: Листва тропического дерева
+  LEAVES_OAK: Листва дуба
+  LEAVES_SPRUCE: Листва ели
+  LEGGINGSCLOTH: Кожаные штаны
+  LEVER: Рычаг
+  LIGHTGEM: Светящийся камень
+  LITPUMPKIN: Светильник Джека
+  LOCKEDCHEST: Запертый сундук
+  LOG_ACACIA: Древесина акации
+  LOG_BIG_OAK: Древесина тёмного дуба
+  LOG_BIRCH: Древесина берёзы
+  LOG_JUNGLE: Древесина тропического дерева
+  LOG_OAK: Древесина дуба
+  LOG_SPRUCE: Древесина ели
+  MAGMACREAM: Магмовый крем
+  MAP: Карта
+  MELON: Арбуз
+  MILK: Молоко
+  MINECART: Вагонетка
+  MINECARTCHEST: Вагонетка с сундуком
+  MINECARTCOMMANDBLOCK: Вагонетка с командным блоком
+  MINECARTFURNACE: Вагонетка с печью
+  MINECARTHOPPER: Вагонетка с загрузочной воронкой
+  MINECARTTNT: Вагонетка с динамитом
+  MOBSPAWNER: Спаунер монстров
+  MONSTERPLACER: Призвать существо -
+  MONSTERSTONEEGG_BRICK: Каменный кирпич с монстрами
+  MONSTERSTONEEGG_CHISELEDBRICK: Резной каменный кирпич с монстрами
+  MONSTERSTONEEGG_COBBLE: Булыжник с монстрами
+  MONSTERSTONEEGG_CRACKEDBRICK: Потрескавшийся каменный кирпич с монстрами
+  MONSTERSTONEEGG_MOSSYBRICK: Замшелый каменный кирпич с монстрами
+  MONSTERSTONEEGG_STONE: Камень с монстрами
+  MUSHROOM: Гриб
+  MUSHROOMSTEW: Тушёные грибы
+  MUSICBLOCK: Нотный блок
+  MYCEL: Мицелий
+  NAMETAG: Бирка
+  NETHERBRICK: Кирпич Нижнего мира
+  NETHERFENCE: Забор Нижнего мира
+  NETHERITE_AXE: незеритовых топоров
+  NETHERITE_BOOTS: незеритовых ботинок
+  NETHERITE_CHESTPLATE: незеритовых нагрудников
+  NETHERITE_HELMET: незеритовых шлемов
+  NETHERITE_HOE: незеритовых мотыг
+  NETHERITE_INGOT: незеритовых слитков
+  NETHERITE_LEGGINGS: незеритовых поножей
+  NETHERITE_PICKAXE: незеритовых кирок
+  NETHERITE_SCRAP: незеритовых обломков
+  NETHERITE_SHOVEL: незеритовых лопат
+  NETHERITE_SWORD: незеритовых мечей
+  NETHERQUARTZ: Кварцевая руда Нижнего мира
+  NETHERSTALK: Нарост Нижнего мира
+  NETHERSTALKSEEDS: Нарост Нижнего мира
+  NETHERSTAR: Звезда Нижнего мира
+  NOTGATE: Красный факел
+  OAK_LOG: Древесина
+  OBSIDIAN: Обсидиан
+  ORECOAL: Уголь
+  OREDIAMOND: Алмазная руда
+  OREEMERALD: Изумрудная руда
+  OREGOLD: Золотая руда
+  OREIRON: Железная руда
+  ORELAPIS: Лазуритовая руда
+  OREREDSTONE: Красная руда
+  ORERUBY: Рубиновая руда
+  PAINTING: Картина
+  PAPER: Бумага
+  PISTONBASE: Поршень
+  PISTONSTICKYBASE: Липкий поршень
+  PORKCHOPCOOKED: Приготовленная свинина
+  PORKCHOPRAW: Сырая свинина
+  PORTAL: Портал
+  POTATO: Картофель
+  POTATOBAKED: Печёный картофель
+  POTATOES: Картофель
+  POTATOPOISONOUS: Ядовитый картофель
+  POTION: Зелье
+  PRESSUREPLATE: Нажимная пластина
+  PUMPKIN: Тыква
+  PUMPKINPIE: Тыквенный пирог
+  QUARTZBLOCK_CHISELED: Резной кварцевый блок
+  QUARTZBLOCK_DEFAULT: Кварцевый блок
+  QUARTZBLOCK_LINES: Блок кварцевый колонны
+  RAIL: Рельсы
+  RECORD: Музыкальная пластинка
+  REDSTONE: Красная пыль
+  REDSTONEDUST: Красная пыль
+  REDSTONELIGHT: Лампа
+  REEDS: Сахарный тростник
+  ROTTENFLESH: Гнилая плоть
+  RUBY: Рубин
+  SADDLE: Седло
+  SANDSTONE: Песчаник
+  SANDSTONE_CHISELED: Резной песчаник
+  SANDSTONE_DEFAULT: Песчаник
+  SANDSTONE_SMOOTH: Гладкий песчаник
+  SAND_DEFAULT: Песок
+  SAND_RED: Красный песок
+  SAPLING_ACACIA: Саженец акации
+  SAPLING_BIRCH: Саженец берёзы
+  SAPLING_JUNGLE: Саженец тропического дерева
+  SAPLING_OAK: Саженец дуба
+  SAPLING_ROOFED_OAK: Саженец тёмного дуба
+  SAPLING_SPRUCE: Саженец ели
+  SEEDS: Семена пшеницы
+  SEEDS_MELON: Семена арбуза
+  SEEDS_PUMPKIN: Семена тыквы
+  SHEARS: Ножницы
+  SHIELD: щитов
+  SIGN: Табличка
+  SKULL_CHAR: Голова
+  SKULL_CREEPER: Голова крипера
+  SKULL_PLAYER: Голова %s
+  SKULL_SKELETON: Череп скелета
+  SKULL_WITHER: Череп Скелета-Иссушителя
+  SKULL_ZOMBIE: Голова зомби
+  SLIMEBALL: Шарик слизи
+  SNOW: Снег
+  SNOWBALL: Снежок
+  SPECKLEDMELON: Сверкающий арбуз
+  SPIDEREYE: Паучий глаз
+  SPONGE: Губка
+  STAINEDGLASS: Окрашенное стекло
+  STAINEDGLASS_BLACK: Чёрное стекло
+  STAINEDGLASS_BLUE: Синее стекло
+  STAINEDGLASS_BROWN: Коричневое стекло
+  STAINEDGLASS_CYAN: Бирюзовое стекло
+  STAINEDGLASS_GRAY: Серое стекло
+  STAINEDGLASS_GREEN: Зелёное стекло
+  STAINEDGLASS_LIGHTBLUE: Светло-синее стекло
+  STAINEDGLASS_LIME: Лаймовое стекло
+  STAINEDGLASS_MAGENTA: Сиреневое стекло
+  STAINEDGLASS_ORANGE: Оранжевое стекло
+  STAINEDGLASS_PINK: Розовое стекло
+  STAINEDGLASS_PURPLE: Фиолетовое стекло
+  STAINEDGLASS_RED: Красное стекло
+  STAINEDGLASS_SILVER: Светло-серое стекло
+  STAINEDGLASS_WHITE: Белое стекло
+  STAINEDGLASS_YELLOW: Жёлтое стекло
+  STAIRSBRICK: Кирпичные ступеньки
+  STAIRSNETHERBRICK: Ступеньки из кирпича Нижнего мира
+  STAIRSQUARTZ: Кварцевые ступеньки
+  STAIRSSANDSTONE: Песчаниковые ступеньки
+  STAIRSSTONE: Каменные ступеньки
+  STAIRSSTONEBRICKSMOOTH: Ступеньки из каменного кирпича
+  STAIRSWOOD: Ступеньки из дуба
+  STAIRSWOODACACIA: Ступеньки из акации
+  STAIRSWOODBIRCH: Ступеньки из берёзы
+  STAIRSWOODDARKOAK: Ступеньки из тёмного дуба
+  STAIRSWOODJUNGLE: Ступеньки из тропического дерева
+  STAIRSWOODSPRUCE: Ступеньки из ели
+  STICK: Палка
+  STONE: Камень
+  STONEBRICKSMOOTH: Каменный кирпич
+  STONEBRICKSMOOTH_CHISELED: Резной каменный кирпич
+  STONEBRICKSMOOTH_CRACKED: Потрескавшийся каменный кирпич
+  STONEBRICKSMOOTH_DEFAULT: Каменный кирпич
+  STONEBRICKSMOOTH_MOSSY: Замшелый каменный кирпич
+  STONEMOSS: Замшелый булыжник
+  STONESLAB_BRICK: Кирпичная плита
+  STONESLAB_COBBLE: Булыжниковая плита
+  STONESLAB_NETHERBRICK: Плита из кирпича Нижнего мира
+  STONESLAB_QUARTZ: Кварцевая плита
+  STONESLAB_SAND: Песчаниковая плита
+  STONESLAB_SMOOTHSTONEBRICK: Плита из каменного кирпича
+  STONESLAB_STONE: Каменная плита
+  STONESLAB_WOOD: Деревянная плита
+  STONE_AXE: каменных топоров
+  STONE_BRICKS: Булыжник
+  STONE_HOE: каменных мотыг
+  STONE_PICKAXE: каменных кирок
+  STONE_SHOVEL: каменных лопат
+  STONE_SWORD: каменных мечей
+  STRING: Нить
+  SUGAR: Сахар
+  SULPHUR: Порох
+  TALLGRASS: Трава
+  TALLGRASS_FERN: Папоротник
+  TALLGRASS_GRASS: Высокая трава
+  TALLGRASS_SHRUB: Куст
+  THINGLASS: Стеклянная панель
+  THINSTAINEDGLASS: Окрашенная стеклянная панель
+  THINSTAINEDGLASS_BLACK: Чёрная стеклянная панель
+  THINSTAINEDGLASS_BLUE: Синяя стеклянная панель
+  THINSTAINEDGLASS_BROWN: Коричневая стеклянная панель
+  THINSTAINEDGLASS_CYAN: Бирюзовая стеклянная панель
+  THINSTAINEDGLASS_GRAY: Серая стеклянная панель
+  THINSTAINEDGLASS_GREEN: Зелёная стеклянная панель
+  THINSTAINEDGLASS_LIGHTBLUE: Светло-синяя стеклянная панель
+  THINSTAINEDGLASS_LIME: Лаймовая стеклянная панель
+  THINSTAINEDGLASS_MAGENTA: Сиреневая стеклянная панель
+  THINSTAINEDGLASS_ORANGE: Оранжевая стеклянная панель
+  THINSTAINEDGLASS_PINK: Розовая стеклянная панель
+  THINSTAINEDGLASS_PURPLE: Фиолетовая стеклянная панель
+  THINSTAINEDGLASS_RED: Красная стеклянная панель
+  THINSTAINEDGLASS_SILVER: Светло-серая стеклянная панель
+  THINSTAINEDGLASS_WHITE: Белая стеклянная панель
+  THINSTAINEDGLASS_YELLOW: Жёлтая стеклянная панель
+  TNT: Динамит
+  TORCH: Факел
+  TRAPDOOR: Люк
+  TRIDENT: трезубцев
+  TRIPWIRE: Растяжка
+  TRIPWIRESOURCE: Натяжной датчик
+  VINE: Лоза
+  WATER: Вода
+  WATERLILY: Кувшинка
+  WATER_BUCKET: Ведро воды
+  WEB: Паутина
+  WEIGHTEDPLATE_HEAVY: Утяжелённая нажимная пластина (Тяжёлая)
+  WEIGHTEDPLATE_LIGHT: Утяжелённая нажимная пластина (Лёгкая)
+  WHEAT: Пшеница
+  WHITESTONE: Камень Края
+  WOOD: Деревянные доски
+  WOODEN_AXE: деревянных топоров
+  WOODEN_HOE: деревянных мотыг
+  WOODEN_PICKAXE: деревянных кирок
+  WOODEN_SHOVEL: деревянных лопат
+  WOODEN_SWORD: деревянных мечей
+  WOODSLAB_ACACIA: Плита из акации
+  WOODSLAB_BIG_OAK: Плита из тёмного дуба
+  WOODSLAB_BIRCH: Плита из берёзы
+  WOODSLAB_JUNGLE: Плита из тропического дерева
+  WOODSLAB_OAK: Плита из дуба
+  WOODSLAB_SPRUCE: Плита из ели
+  WOOD_ACACIA: Доски из акации
+  WOOD_BIG_OAK: Доски из тёмного дуба
+  WOOD_BIRCH: Доски из берёзы
+  WOOD_JUNGLE: Доски из тропического дерева
+  WOOD_OAK: Доски из дуба
+  WOOD_SPRUCE: Доски из ели
+  WOOLCARPET_BLACK: Чёрный ковёр
+  WOOLCARPET_BLUE: Синий ковёр
+  WOOLCARPET_BROWN: Коричневый ковёр
+  WOOLCARPET_CYAN: Бирюзовый ковёр
+  WOOLCARPET_GRAY: Серый ковёр
+  WOOLCARPET_GREEN: Зелёный ковёр
+  WOOLCARPET_LIGHTBLUE: Светло-синий ковёр
+  WOOLCARPET_LIME: Лаймовый ковёр
+  WOOLCARPET_MAGENTA: Сиреневый ковёр
+  WOOLCARPET_ORANGE: Оранжевый ковёр
+  WOOLCARPET_PINK: Розовый ковёр
+  WOOLCARPET_PURPLE: Фиолетовый ковёр
+  WOOLCARPET_RED: Красный ковёр
+  WOOLCARPET_SILVER: Светло-серый ковёр
+  WOOLCARPET_WHITE: Ковёр
+  WOOLCARPET_YELLOW: Жёлтый ковёр
+  WRITINGBOOK: Книга и перо
+  WRITTENBOOK: Написанная книга
+  YELLOWDUST: Светящаяся пыль

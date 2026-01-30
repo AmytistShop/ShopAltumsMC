@@ -30,6 +30,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -298,7 +299,7 @@ ensureDefaultItemsYml();
 
             // feedback
             String currency = cfg("messages.currency");
-            String itemName = getItemName(itemMat);
+            String itemName = getItemName(new ItemStack(itemMat));
             p.sendMessage(color(prefix() + cfg("messages.bought")
                     .replace("%item%", itemName)
                     .replace("%amount%", String.valueOf(amount))
@@ -438,7 +439,7 @@ ensureDefaultItemsYml();
         if (!(st instanceof Sign sign)) return false;
 
         String currency = cfg("messages.currency");
-        String itemName = getHologramItemName(item);
+        String itemName = getHologramItemName(new ItemStack(item));
 
         List<String> lines = getConfig().getStringList("sign.lines");
         if (lines == null || lines.size() < 4) {
@@ -475,7 +476,7 @@ ensureDefaultItemsYml();
         cleanupHologram(chestBlock);
 
         String ownerName = owner.getName();
-        String itemName = getHologramItemName(item);
+        String itemName = getHologramItemName(new ItemStack(item));
 
         List<String> lines = getConfig().getStringList("hologram.lines");
         if (lines == null || lines.isEmpty()) {
